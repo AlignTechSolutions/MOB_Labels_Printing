@@ -1,0 +1,31 @@
+pluginManagement {
+    ext.hilt_version = "2.39.1"
+
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if( requested.id.id == 'dagger.hilt.android.plugin') {
+                useModule("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")
+            }
+        }
+    }
+
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven {url "https://google.bintray.com/flexbox-layout"}
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+rootProject.name = "Labels Printing"
+include ':app'

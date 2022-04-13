@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting" />
+    </data>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/lyParent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal">
+
+
+        <ImageButton
+            android:id="@+id/imgBtnDelete"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="حذف"
+            android:padding="@dimen/_2sdp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_delete"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/imgBtnPrint"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="'print'"
+            android:padding="@dimen/_2sdp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_printer"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvId"
+            style="@style/textRegularStyle"
+            android:layout_width="60dp"
+            android:background="@drawable/column_header_rectangle"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="م"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tv_bar_code"
+            style="@style/textRegularStyle"
+            android:layout_width="100dp"
+            android:background="@drawable/column_rectangle"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="الكود"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:bindString="@{model.barCode}" />
+
+        <TextView
+            android:id="@+id/tvNameProduct"
+            style="@style/textRegularStyle"
+            android:layout_width="300dp"
+            android:background="@drawable/column_rectangle"
+            android:breakStrategy="balanced"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textSize="11sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="11sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:textAlignment="viewStart"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="اسم الصنف"
+            android:textColor="@color/black"
+            app:bindString="@{model.nameProduct}"
+            tools:targetApi="m" />
+
+        <TextView
+            android:id="@+id/tvTotalCount"
+            style="@style/textRegularStyle"
+            android:layout_width="80dp"
+            android:background="@drawable/column_rectangle"
+            android:breakStrategy="balanced"
+            android:ellipsize="marquee"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="true"
+            android:text="العدد الدفترى"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="11sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            app:bindString="@{model.price.toString()}"
+            tools:targetApi="m" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="60dp"
+            style="@style/textRegularStyle"
+            android:background="@drawable/column_header_rectangle"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="م"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <TextView
+            style="@style/textRegularStyle"
+            android:layout_width="100dp"
+            android:background="@drawable/row_header_rectangle"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="الباركود"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <TextView
+            style="@style/textRegularStyle"
+            android:layout_width="300dp"
+            android:background="@drawable/row_header_rectangle"
+            android:breakStrategy="balanced"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="true"
+            android:text="اسم الصنف"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="11sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="m" />
+
+        <TextView
+            style="@style/textRegularStyle"
+            android:layout_width="80dp"
+            android:background="@drawable/row_header_rectangle"
+            android:breakStrategy="balanced"
+            android:ellipsize="marquee"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="true"
+            android:text="السعر"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="11sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            tools:targetApi="m" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</HorizontalScrollView>
+

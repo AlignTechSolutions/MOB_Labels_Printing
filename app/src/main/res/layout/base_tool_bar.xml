@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="@dimen/_4sdp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/baseToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:animateLayoutChanges="true"
+            android:background="@color/purple_500"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <TextView
+                android:id="@+id/tvToolbar"
+                style="@style/textRegularStyle"
+                android:textColor="@color/white"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                app:autoSizeTextType="uniform"
+                android:breakStrategy="balanced"
+                android:textSize="13sp"
+                android:layout_gravity="center"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeMinTextSize="11sp"
+                app:autoSizeStepGranularity="2sp"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_horizontal"
+                tools:targetApi="o"
+                tools:text="Title Screen" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+</layout>

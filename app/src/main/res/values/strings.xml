@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Labels Printing</string>
+
+    <string name="please_wait">Please wait … Process Data</string>
+    <string name="import_excel">Import Barcode Excel</string>
+
+
+    <string name="show_profile">Show profile</string>
+    <string name="dashboard">Dashboard</string>
+
+    <string name="user_name">User Name</string>
+    <string name="enter_your_pass">Password</string>
+    <string name="enter_company_code">Company Code</string>
+    <string name="login">Login</string>
+
+    <string name="inventoryTransactions">Inventory File</string>
+    <string name="currentInventory">Current Inventory</string>
+    <string name="scan_barcode">Start Scan Barcode</string>
+    <string name="import_excel_error">If a new inventory file is called, the previous inventory file will be deleted</string>
+    <string name="import_inventory_file">Import inventory file</string>
+    <string name="export_excel">Export Excel</string>
+    <string name="cancel">Cancel</string>
+    <string name="do_you_want_to_logout">Do you want to Logout?</string>
+    <string name="do_you_want_to_reset">Do you want to Reset Database?</string>
+    <string name="logout">Logout</string>
+    <string name="stay_logged_in">stay logged in</string>
+    <string name="internal_storage">Internal Storage</string>
+    <string name="up_file">Up Directory</string>
+    <string name="process_excel_sheet">Process Excel Sheet</string>
+    <string name="save">Save</string>
+    <string name="reset_database">Reset Database</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="required">required</string>
+    <string name="please_enter_user_name">Please enter user name</string>
+    <string name="please_enter_password">Please enter password</string>
+    <string name="please_enter_company_code">Please enter company code</string>
+    <string name="warning">Warning</string>
+    <string name="proceed">Proceed</string>
+    <string name="old_app_version">you are using an old version of Sales-tc, update is required</string>
+    <string name="company_url_not_found" translatable="false">Company Url Not Found</string>
+    <string name="version">Version %s </string>
+    <string name="remaining_time">Remaining Time :</string>
+    <string name="session_is_finished">Your work day is over, login is required…</string>
+    <string name="network_connection_failed">Failed to connect to server.. \nplease try again</string>
+
+    <string name="reset_password">Reset Password</string>
+    <string name="please_enter_password_length_greater_than_6">Please enter a password with minimum length of 6 characters</string>
+    <string name="password_not_match">Passwords not matched</string>
+
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New password</string>
+    <string name="change">Change</string>
+    <string name="password_changed_msg">Password has been updated successfully!</string>
+    <string name="enter_old_password" translatable="false">Enter old password</string>
+    <string name="confirm_password" translatable="false">Confirm Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="enter_new_password" translatable="false">Enter new password</string>
+    <string name="password_should_be_matched" translatable="false"><![CDATA[New Password & Confirm Password not matched]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
