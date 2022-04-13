@@ -23,6 +23,9 @@ import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrint
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.viewModel.LabelsPrintingViewModel
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
+import com.rt.printerlibrary.connect.PrinterInterface
+import com.rt.printerlibrary.observer.PrinterObserver
+import com.rt.printerlibrary.observer.PrinterObserverManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import org.apache.poi.ss.usermodel.Cell
@@ -35,7 +38,7 @@ import java.io.IOException
 
 @AndroidEntryPoint
 class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , DialogCallBack ,
-    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete{
+    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete , PrinterObserver {
 
     private val activityViewModel : OneSingleViewModel by activityViewModels()
     private val mViewModel : LabelsPrintingViewModel by viewModels()
@@ -50,6 +53,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     ): View{
         super.onCreateView(inflater, container, savedInstanceState)
 
+        PrinterObserverManager.getInstance().add(this@LabelsPrintingFragment)
         return rootView
     }
 
@@ -329,8 +333,13 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
        kuToast("print" + label.nameProduct)
     }
 
+    override fun printerObserverCallback(p0: PrinterInterface<*>?, p1: Int) {
+        TODO("Not yet implemented")
+    }
 
-
+    override fun printerReadMsgCallback(p0: PrinterInterface<*>?, p1: ByteArray?) {
+        TODO("Not yet implemented")
+    }
 
 
 }
