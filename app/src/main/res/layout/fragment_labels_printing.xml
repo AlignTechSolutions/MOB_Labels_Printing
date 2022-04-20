@@ -88,7 +88,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_scan_logo" />
+                            android:src="@drawable/ic_import_label_printing" />
 
                         <TextView
                             android:id="@+id/tvScan"
@@ -154,7 +154,7 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/purple_500"
             android:contentDescription="@string/import_excel"
-            android:onClick="@{() -> fragment.inflateImportBarcodeDialog()}"
+            android:onClick="@{() -> fragment.onClickAdd()}"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

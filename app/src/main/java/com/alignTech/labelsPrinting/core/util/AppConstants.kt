@@ -46,4 +46,9 @@ object AppConstants {
     const val GENERAL_ERROR_EN = "هناك خطأ ما. حاول مرة اخرى"
     const val GENERAL_ERROR_500 = "هناك خطأ ما فى قاعدة البيانات . حاول مرة اخرى"
 
+    const val PRINTER_MAC_ADDRESS = "printer_mac_address"
+    const val PRINTER_NAME = "printer_name"
+    const val PRINTER_BLUETOOTH_DEVICE = "PRINTER_BLUETOOTH_DEVICE"
+
+
 }

@@ -10,6 +10,11 @@
         android:title="@string/app_name" />
 
     <item
+        android:id="@+id/connectPrinter"
+        android:icon="@drawable/ic_printer"
+        android:title="@string/connect_to_printer" />
+
+    <item
         android:id="@+id/changePassword"
         android:icon="@drawable/ic_baseline_password_24"
         android:title="@string/reset_password" />

@@ -13,6 +13,10 @@ class LabelsPrintingRepositoryImp @Inject constructor(): LabelsPrintingRepositor
     @Inject
     lateinit var  appDatabaseService: AppDatabase
 
+    override suspend fun saveLabel(labels: LabelsPrinting): Long =  withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+        appDatabaseService.labelsPrintingDao().insertNewLabel(labels)
+    }
+
     override suspend fun saveLabels(labels: ArrayList<LabelsPrinting>): List<Long> =  withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
         appDatabaseService.labelsPrintingDao().clearTable()
         appDatabaseService.labelsPrintingDao().insertList(labels)

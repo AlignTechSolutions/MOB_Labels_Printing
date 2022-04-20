@@ -32,7 +32,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo_label_printing" />
 
             <TextView
                 style="@style/textMediumStyle"

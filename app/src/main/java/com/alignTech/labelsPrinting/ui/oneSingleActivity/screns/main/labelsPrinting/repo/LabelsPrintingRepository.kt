@@ -12,6 +12,8 @@ interface LabelsPrintingRepository{
 
     // Local Api
 
+    suspend fun saveLabel(labels: LabelsPrinting) :Long
+
     suspend fun saveLabels(labels: ArrayList<LabelsPrinting>) :List<Long>
 
     suspend fun getAllLabelsPrinting(): List<LabelsPrinting>?

@@ -8,7 +8,7 @@ import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
 import com.alignTech.labelsPrinting.local.typeConverters.DateTypeConverter
 
 @Database(
-    version = 1 ,
+    version = 2 ,
     exportSchema = false,
     entities = [LabelsPrinting::class],
 )

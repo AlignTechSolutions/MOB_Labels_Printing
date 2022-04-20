@@ -6,26 +6,36 @@ import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.alfayedoficial.kotlinutils.*
 import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.callback.DialogCallBack
 import com.alignTech.labelsPrinting.callback.OnDelete
+import com.alignTech.labelsPrinting.callback.SaveDBCallBack
 import com.alignTech.labelsPrinting.core.base.view.BaseFragment
 import com.alignTech.labelsPrinting.core.util.AppConstants.PICK_FILE_RESULT_CODE
 import com.alignTech.labelsPrinting.core.util.setBaseActivityFragmentsToolbar
 import com.alignTech.labelsPrinting.databinding.FragmentLabelsPrintingBinding
 import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
+import com.alignTech.labelsPrinting.ui.dialog.addNewRow.view.AddNewRowToDbFragmentDialog
+import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.KotlinMainFragmentDialog
 import com.alignTech.labelsPrinting.ui.dialog.importExcel.view.DialogImportExcelFragment
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.LabelsPrintingTableRvAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.NameProductAutoCompleteAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.viewModel.LabelsPrintingViewModel
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.configObj
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.curPrinterInterface
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.printEnable
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.printerFactory
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.rtPrinterKotlin
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.staticDevice
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.txtDeviceSelected
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.txtDeviceSelectedTag
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
-import com.rt.printerlibrary.connect.PrinterInterface
-import com.rt.printerlibrary.observer.PrinterObserver
-import com.rt.printerlibrary.observer.PrinterObserverManager
+import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
+import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory
+import com.rt.printerlibrary.printer.RTPrinter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import org.apache.poi.ss.usermodel.Cell
@@ -38,13 +48,14 @@ import java.io.IOException
 
 @AndroidEntryPoint
 class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , DialogCallBack ,
-    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete , PrinterObserver {
+    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete  {
 
     private val activityViewModel : OneSingleViewModel by activityViewModels()
     private val mViewModel : LabelsPrintingViewModel by viewModels()
     private val labelsPrintingModels: ArrayList<LabelsPrinting> = arrayListOf()
     private val adapterLabelsPrintingTableRv by lazy { LabelsPrintingTableRvAdapter() }
     private lateinit var adapterNameProductAutoComplete: NameProductAutoCompleteAdapter
+    private var statusInsert = true
 
 
     override fun onCreateView(
@@ -53,7 +64,6 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     ): View{
         super.onCreateView(inflater, container, savedInstanceState)
 
-        PrinterObserverManager.getInstance().add(this@LabelsPrintingFragment)
         return rootView
     }
 
@@ -71,6 +81,10 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
             toolbar.apply {
                 setBaseActivityFragmentsToolbar(kuRes.getString(R.string.app_name), baseToolbar, tvToolbar)
             }
+
+            printerFactory = ThermalPrinterFactory()
+            rtPrinterKotlin = printerFactory?.create() as RTPrinter<BluetoothEdrConfigBean>?
+            rtPrinterKotlin?.setPrinterInterface(curPrinterInterface)
         }
     }
 
@@ -165,7 +179,9 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 dataBinder.apply {
                     if (it.isEmpty()){
                         vAParent.displayedChild = vAParent.indexOfChild(vAImport)
+                        statusInsert = false
                     }else{
+                        statusInsert = true
                         vAParent.displayedChild = vAParent.indexOfChild(vAHorizontalScrollView)
                         adapterLabelsPrintingTableRv.setDataList(it)
                         setSearchNameProduct(it)
@@ -181,8 +197,28 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     }
 
 
-    fun saveDB(){
+    private fun saveDB(){
+        val dialog = AddNewRowToDbFragmentDialog()
+        dialog.setOnSaveItemClickListener(object :SaveDBCallBack{
 
+            override fun saveNewLabelsPrinting(model: LabelsPrinting) {
+                MainScope().launch {
+                    mViewModel.saveLabel(model)
+                    activityViewModel.getAllLabelsPrinting()
+                    navController.navigate(R.id.labelsPrintingFragment)
+                }
+            }
+
+        })
+        dialog.show(requireActivity().supportFragmentManager, dialog.tag)
+    }
+
+    fun onClickAdd(){
+        if (statusInsert){
+            saveDB()
+        }else{
+            inflateImportBarcodeDialog()
+        }
     }
 
     fun inflateImportBarcodeDialog(){
@@ -243,6 +279,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                     (activity as OneSingleActivity).apply {
                         snackBarError("تم استراد الملف بنجاح" , R.color.TemplateGreen, R.color.white)
                         loadingProgress(false)
+                        activityViewModel.getAllLabelsPrinting()
                     }
 
                 }
@@ -284,7 +321,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                                             2 -> labelsPrintingModel.nameProduct = cell.toString()
                                             3 -> {
                                                 if (cell.cellType == Cell.CELL_TYPE_NUMERIC){
-                                                    labelsPrintingModel.price = cell.numericCellValue.toInt()
+                                                    labelsPrintingModel.price = cell.numericCellValue
                                                 }
                                                 labelsPrintingModels.add(labelsPrintingModel)
 
@@ -330,16 +367,25 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     }
 
     override fun printLabel(label: LabelsPrinting){
-       kuToast("print" + label.nameProduct)
+        if (configObj == null || rtPrinterKotlin == null || printerFactory == null
+            || txtDeviceSelected == null
+            ||txtDeviceSelectedTag == null || staticDevice == null || printEnable == null){
+            (activity as OneSingleActivity).showBluetoothDeviceChooseDialog()
+            return
+        }else{
+            configObj = BluetoothEdrConfigBean(staticDevice)
+            val kotlinMainFragmentDialog = KotlinMainFragmentDialog().apply {
+                setLabelsPrinting(label)
+            }
+            kotlinMainFragmentDialog.show(childFragmentManager, null)
+        }
+
     }
 
-    override fun printerObserverCallback(p0: PrinterInterface<*>?, p1: Int) {
-        TODO("Not yet implemented")
-    }
 
-    override fun printerReadMsgCallback(p0: PrinterInterface<*>?, p1: ByteArray?) {
-        TODO("Not yet implemented")
-    }
+
+
+
 
 
 }

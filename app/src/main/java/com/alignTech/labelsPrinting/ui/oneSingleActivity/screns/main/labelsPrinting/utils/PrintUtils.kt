@@ -2,12 +2,14 @@ package com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrin
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
+import android.bluetooth.BluetoothDevice
 import android.graphics.*
 import android.util.Log
+import com.alfayedoficial.kotlinutils.kuInfoLog
 import com.alfayedoficial.kotlinutils.kuToast
 import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
@@ -15,6 +17,7 @@ import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
 import com.rt.printerlibrary.cmd.EscFactory
 import com.rt.printerlibrary.connect.PrinterInterface
 import com.rt.printerlibrary.enumerate.BmpPrintMode
+import com.rt.printerlibrary.enumerate.CommonEnum
 import com.rt.printerlibrary.enumerate.ConnectStateEnum
 import com.rt.printerlibrary.exception.SdkException
 import com.rt.printerlibrary.factory.cmd.CmdFactory
@@ -22,13 +25,17 @@ import com.rt.printerlibrary.factory.connect.BluetoothFactory
 import com.rt.printerlibrary.factory.connect.PIFactory
 import com.rt.printerlibrary.factory.printer.PrinterFactory
 import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory
+import com.rt.printerlibrary.observer.PrinterObserver
+import com.rt.printerlibrary.observer.PrinterObserverManager
 import com.rt.printerlibrary.printer.RTPrinter
 import com.rt.printerlibrary.setting.BitmapSetting
 import com.rt.printerlibrary.setting.CommonSetting
+import com.rt.printerlibrary.utils.PrintStatusCmd
+import com.rt.printerlibrary.utils.PrinterStatusPareseUtils
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class PrintUtils {
+class PrintUtils : PrinterObserver {
 
     @BaseEnum.ConnectType
     private var checkedConType = BaseEnum.CON_BLUETOOTH
@@ -41,29 +48,29 @@ class PrintUtils {
     private var curPrinterInterface: PrinterInterface<*>? = null
     private var iPrintTimes = 0
 
-    private var mActivity: Activity? = null
+    private var mActivity: OneSingleActivity? = null
 
     private var txtDeviceSelected : String? = null
     private var txtDeviceSelectedTag : Int? = null
 
     private var bmpPrintWidth = 40
 
-    companion object{
-        var rtPrinterKotlin: RTPrinter<BluetoothEdrConfigBean>? = null
-    }
 
+    var rtPrinterKotlin: RTPrinter<BluetoothEdrConfigBean>? = null
+    var deviceSharedObject: BluetoothDevice? = null
     init {
         printerFactory = ThermalPrinterFactory()
         rtPrinterKotlin = printerFactory?.create() as RTPrinter<BluetoothEdrConfigBean>?
         rtPrinterKotlin?.setPrinterInterface(curPrinterInterface)
+        PrinterObserverManager.getInstance().add(this)
 
     }
 
-    fun initPrint(mActivity: Activity){
+    fun initPrint(mActivity: OneSingleActivity){
         this.mActivity = mActivity
     }
 
-    fun showConnectedListDialog() {
+    fun inflateConnectedListDialog() {
         val dialog = AlertDialog.Builder(mActivity)
         dialog.setTitle(mActivity?.getString(R.string.dialog_title_connected_devlist))
         val devList = arrayOfNulls<String>(printerInterfaceArrayList.size)
@@ -91,7 +98,7 @@ class PrintUtils {
         dialog.show()
     }
 
-    fun doConnect() {
+    private fun doConnect() {
         if (txtDeviceSelectedTag == BaseEnum.NO_DEVICE) {
             mActivity?.showAlertDialog(mActivity?.getString(R.string.main_pls_choose_device))
             return
@@ -126,8 +133,35 @@ class PrintUtils {
         txtDeviceSelectedTag = null
     }
 
-    fun getBluetoothDeviceList() {
-        //TODO GET LIST
+    fun printLabel(device: String): Boolean {
+        txtDeviceSelected = device
+        configObj = BluetoothEdrConfigBean(deviceSharedObject)
+        txtDeviceSelectedTag = BaseEnum.HAS_DEVICE
+        return isConfigPrintEnable(configObj as BluetoothEdrConfigBean)
+
+    }
+
+     fun showBluetoothDeviceChooseDialog(device: BluetoothDevice, label: LabelsPrinting) {
+         configObj = BluetoothEdrConfigBean(device)
+         txtDeviceSelectedTag = BaseEnum.HAS_DEVICE
+         isConfigPrintEnable(configObj as BluetoothEdrConfigBean)
+         generate(label)
+    }
+
+
+    private fun isConfigPrintEnable(configObj: Any) :Boolean {
+        val status: Boolean
+        if (isInConnectList(configObj)) {
+            status = true
+            kuInfoLog("aaaaaaaaaaassssssssss","isConfigPrintEnable: $status")
+            doConnect()
+        } else{
+            status = false
+            doDisConnect()
+            kuInfoLog("aaaaaaaaaaassssssssss","isConfigPrintEnable: $status")
+
+        }
+        return status
     }
 
     private fun isInConnectList(configObj: Any): Boolean {
@@ -249,7 +283,52 @@ class PrintUtils {
         }
     }
 
+    override fun printerObserverCallback(printerInterface: PrinterInterface<*>, state: Int) {
+       MainScope().launch {
+           when (state) {
+               CommonEnum.CONNECT_STATE_SUCCESS -> {
+                   mActivity?.kuToast(printerInterface.configObject.toString() + mActivity?.getString(R.string._main_connected))
+                   txtDeviceSelected = printerInterface.configObject.toString()
+                   txtDeviceSelectedTag = BaseEnum.HAS_DEVICE
+                   curPrinterInterface = printerInterface //设置为当前连接， set current Printer Interface
+                   printerInterfaceArrayList.add(printerInterface) //多连接-添加到已连接列表
+                   rtPrinterKotlin!!.setPrinterInterface(printerInterface)
+                   //  BaseApplication.getInstance().setRtPrinter(rtPrinter);
+                   doConnect()
+               }
+               CommonEnum.CONNECT_STATE_INTERRUPTED -> {
+                   if (printerInterface.configObject != null) {
+                       mActivity?.kuToast(printerInterface.configObject.toString() + mActivity?.getString(R.string._main_disconnect))
+                   } else {
+                       mActivity?.kuToast( mActivity!!.getString(R.string._main_disconnect))
+                   }
+                   txtDeviceSelected = null
+                   txtDeviceSelectedTag = null
+                   curPrinterInterface = null
+                   printerInterfaceArrayList.remove(printerInterface) //多连接-从已连接列表中移除
+                   //  BaseApplication.getInstance().setRtPrinter(null);
+                  doDisConnect()
+               }
+               else -> {}
+           }
+       }
+    }
 
+    override fun printerReadMsgCallback(printerInterface: PrinterInterface<*>?, bytes: ByteArray?) {
+       MainScope().launch {
+           val statusBean = PrinterStatusPareseUtils.parsePrinterStatusResult(bytes)
+           if (statusBean.printStatusCmd == PrintStatusCmd.cmd_PrintFinish) {
+               if (statusBean.blPrintSucc) {
+                   mActivity?.kuToast("print ok")
+               } else {
+                   mActivity?.kuToast(PrinterStatusPareseUtils.getPrinterStatusStr(statusBean))
+               }
+           } else if (statusBean.printStatusCmd == PrintStatusCmd.cmd_Normal) {
+               mActivity?.kuToast("print status：" + PrinterStatusPareseUtils.getPrinterStatusStr(statusBean))
+
+           }
+       }
+    }
 
 
 

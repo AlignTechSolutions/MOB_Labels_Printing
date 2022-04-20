@@ -2,25 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alignTech.labelsPrinting">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <uses-permission android:name="android.permission.BLUETOOTH_STACK" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_logo_label_printing"
         android:name=".core.app.BaseApp"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_logo_label_printing"
         android:supportsRtl="true"
         android:theme="@style/Theme.LabelsPrinting">
         <activity
-            android:name="com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity"
+            android:name=".ui.oneSingleActivity.view.OneSingleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+<!---->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

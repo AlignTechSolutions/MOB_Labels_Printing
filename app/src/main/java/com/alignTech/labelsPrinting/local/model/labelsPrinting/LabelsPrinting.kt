@@ -11,7 +11,7 @@ data class LabelsPrinting(
     var localId: Int? = null,
     var barCode: String? = null,
     var nameProduct: String? = null,
-    var price: Int? = 0,
+    var price: Double? = 0.0,
     @Ignore
     var isSelected: Boolean = false
 ):Parcelable

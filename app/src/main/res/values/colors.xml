@@ -13,10 +13,15 @@
 
     <color name="textFont">#707070</color>
     <color name="textFont2">#ff212121</color>
+    <color name="stroke_gray_color">#dddddd</color>
+    <color name="hint_text_color">#7f7f7f</color>
 
     <color name="athens_gray">#e8e9ec</color>
     <color name="TemplateMidGrey">#A5A5A5</color>
     <color name="TemplateGreen">#2BA951</color>
     <color name="TemplateRed">#C13F55</color>
+    <color name="TemplateLightGrey">#F5F5F5</color>
+    <color name="TemplateSkyBlue">#4fcef9</color>
+    <color name="TemplateGreenFaded">#650EEA7D</color>
 
 </resources>

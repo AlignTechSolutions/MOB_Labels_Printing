@@ -23,7 +23,7 @@
             android:text="م"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="11sp" />
+            android:textSize="18sp" />
 
         <TextView
             style="@style/textRegularStyle"
@@ -35,14 +35,12 @@
             android:text="الباركود"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="11sp" />
+            android:textSize="18sp" />
 
         <TextView
             style="@style/textRegularStyle"
             android:layout_width="300dp"
             android:background="@drawable/row_header_rectangle"
-            android:breakStrategy="balanced"
-            android:ellipsize="marquee"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_2sdp"
@@ -50,19 +48,14 @@
             android:text="اسم الصنف"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="11sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeMinTextSize="11sp"
-            app:autoSizeStepGranularity="2sp"
-            app:autoSizeTextType="uniform"
-            tools:targetApi="m" />
+            android:textSize="18sp"
+           />
 
         <TextView
             style="@style/textRegularStyle"
             android:layout_width="80dp"
             android:background="@drawable/row_header_rectangle"
             android:breakStrategy="balanced"
-            android:ellipsize="marquee"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_2sdp"
@@ -70,12 +63,7 @@
             android:text="السعر"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="11sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeMinTextSize="11sp"
-            app:autoSizeStepGranularity="2sp"
-            app:autoSizeTextType="uniform"
-            tools:targetApi="m" />
+            android:textSize="18sp" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

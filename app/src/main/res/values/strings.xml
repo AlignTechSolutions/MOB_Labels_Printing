@@ -13,11 +13,8 @@
     <string name="enter_company_code">Company Code</string>
     <string name="login">Login</string>
 
-    <string name="inventoryTransactions">Inventory File</string>
-    <string name="currentInventory">Current Inventory</string>
-    <string name="scan_barcode">Start Scan Barcode</string>
-    <string name="import_excel_error">If a new inventory file is called, the previous inventory file will be deleted</string>
-    <string name="import_inventory_file">Import inventory file</string>
+    <string name="import_excel_error">If a new Label Printing file is called, the previous inventory file will be deleted</string>
+    <string name="import_inventory_file">Import Label Printing file</string>
     <string name="export_excel">Export Excel</string>
     <string name="cancel">Cancel</string>
     <string name="do_you_want_to_logout">Do you want to Logout?</string>
@@ -59,7 +56,7 @@
     <string name="enter_new_password" translatable="false">Enter new password</string>
     <string name="password_should_be_matched" translatable="false"><![CDATA[New Password & Confirm Password not matched]]></string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
     <string name="dialog_title_connected_devlist">Connected Device List</string>
     <string name="pls_connect_printer_first">Please connect printer first.</string>
@@ -68,5 +65,31 @@
     <string name="dialog_tip">Tip</string>
     <string name="dialog_back">Back</string>
     <string name="tip_upload_image">No Barcode Generated,please retry again</string>
+    <string name="connected_list_of_printers">Connected list of printers</string>
+    <string name="connect_to_printer">Connect to printer</string>
+
+    <string name="choose_bluetooth_device">Choose Bluetooth Device</string>
+    <string name="paired_devices">Paired</string>
+    <string name="tip_have_no_paired_device">No paired device</string>
+    <string name="tip_have_no_found_bluetooth_device">No Device</string>
+    <string name="search_device">Search</string>
+    <string name="please_select_printer">Please select a device of type Printer…</string>
+    <string name="could_not_pair">Couldn\'t Pair With This Device…</string>
+    <string name="added_device_successfully">Device Added Successfully…</string>
+    <string name="printer_gps_permission">You have to approve to use GPS to discover bluetooth devices</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="device_name">Device Name</string>
+    <string name="str_bluetooth_on" translatable="false">Bluetooth On</string>
+    <string name="str_tv_paired_devices_lbl">Paired Devices</string>
+    <string name="str_tv_available_devices_lbl">Available Devices</string>
+    <string name="str_blt_pairing_lbl">Pairing …</string>
+    <string name="must_give_permission_to_continue">Must give permissions to continue</string>
+    <string name="_main_connected">-connect success</string>
+    <string name="_main_connected_fail">connect fail</string>
+    <string name="_main_disconnect">disconnected</string>
+    <string name="show_conncected_devices">Show Conncected Devices</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
+    <string name="please_connect">Click to connect a device</string>
 
 </resources>

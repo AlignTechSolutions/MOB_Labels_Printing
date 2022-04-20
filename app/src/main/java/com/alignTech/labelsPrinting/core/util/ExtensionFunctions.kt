@@ -135,12 +135,19 @@ fun EditText.setNumberNotAcceptMinus() {
 
         override fun afterTextChanged(text: Editable?) {
             val number: String
-            if (text?.contains("-")!!) {
-                number = text.toString().replace("-", "")
-                setText(number)
-            }else if (text.contains(",")){
-                number = text.toString().replace(",", "")
-                setText(number)
+            when {
+                text?.contains("-")!! -> {
+                    number = text.toString().replace("-", "")
+                    setText(number)
+                }
+                text.contains(",") -> {
+                    number = text.toString().replace(",", "")
+                    setText(number)
+                }
+                text.contains(" ") -> {
+                    number = text.toString().replace(" ", "")
+                    setText(number)
+                }
             }
         }
     })

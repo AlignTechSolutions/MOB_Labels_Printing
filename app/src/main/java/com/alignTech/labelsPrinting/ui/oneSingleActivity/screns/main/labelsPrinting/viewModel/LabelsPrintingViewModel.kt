@@ -9,6 +9,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LabelsPrintingViewModel @Inject constructor(private var  repo: LabelsPrintingRepository) : ViewModel() {
 
+    suspend fun saveLabel(labels: LabelsPrinting) = repo.saveLabel(labels)
+
     suspend fun saveLabelLists(labels: ArrayList<LabelsPrinting>) = repo.saveLabels(labels)
 
     suspend fun deleteLabel(localId: Int) = repo.deleteLabel(localId)

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="fragment"
+            type="com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.KotlinMainFragmentDialog" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:onClick="@{()->fragment.dismiss()}"
+        android:layout_height="match_parent"
+        tools:context=".ui.dialog.bluetoothDevice.KotlinMainFragmentDialog">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="@dimen/_8sdp"
+            app:contentPadding="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <EditText
+                    android:id="@+id/etxtBarCode"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp"
+                    android:text="barCode"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayoutCompat3"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayoutCompat3"
+                    app:layout_constraintTop_toTopOf="@+id/linearLayoutCompat3" />
+
+                <ImageView
+                    android:id="@+id/mgBarCode"
+                    android:layout_width="242dp"
+                    android:layout_height="71dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/etxtBarCode"
+                    app:layout_constraintStart_toStartOf="@+id/etxtBarCode"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/mgBarCode2"
+                    android:layout_width="342dp"
+                    android:layout_height="220dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/etxtBarCode"
+                    app:layout_constraintStart_toStartOf="@+id/etxtBarCode"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <Button
+                    android:id="@+id/tnGenerate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Generate"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/mgBarCode"
+                    app:layout_constraintStart_toStartOf="@+id/mgBarCode"
+                    app:layout_constraintTop_toBottomOf="@+id/mgBarCode" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutCompat3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    tools:context=".activity.KotlinMainActivity">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingBottom="50dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_connected_list"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:text="@string/show_conncected_devices"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/tvDeviceSelected"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="14dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="14dp"
+                                android:background="@color/athens_gray"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:tag="-1"
+                                android:text="@string/please_connect"
+                                android:textSize="18sp"
+                                android:visibility="gone" />
+
+                            <ProgressBar
+                                android:id="@+id/pbConnect"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_gravity="center_horizontal"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_disConnect"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="10dp"
+                                    android:layout_weight="1"
+                                    android:enabled="false"
+                                    android:text="@string/disconnect" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_connect"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="10dp"
+                                    android:layout_weight="1"
+                                    android:text="@string/connect" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:layout_marginBottom="10dp"
+                                android:background="@color/athens_gray"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</layout>

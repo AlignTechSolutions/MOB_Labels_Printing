@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="fragment"
+            type="com.alignTech.labelsPrinting.ui.dialog.addNewRow.view.AddNewRowToDbFragmentDialog" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        tools:context=".ui.dialog.addNewRow.view.AddNewRowToDbFragmentDialog"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_8sdp"
+            android:gravity="center"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="@dimen/_8sdp"
+            app:contentPadding="@dimen/_3sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_app"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:src="@drawable/ic_database"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    style="@style/textMediumStyle"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:text="إضافة صنف جديد"
+                    android:textColor="@color/white" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_8sdp"
+                    app:cardCornerRadius="@dimen/_8sdp"
+                    app:contentPadding="@dimen/_10sdp">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/inCode"
+                            style="@style/loginTextInputLayout"
+                            android:hint="الكود"
+                            app:boxCornerRadiusBottomEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusBottomStart="@dimen/_3sdp"
+                            app:boxCornerRadiusTopEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusTopStart="@dimen/_3sdp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/code"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:textColor="@color/purple_500"
+                                android:textSize="16sp"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/inNameProduct"
+                            style="@style/loginTextInputLayout"
+                            android:hint="اسم الصنف"
+                            app:boxCornerRadiusBottomEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusBottomStart="@dimen/_3sdp"
+                            app:boxCornerRadiusTopEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusTopStart="@dimen/_3sdp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/nameProduct"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:textColor="@color/purple_500"
+                                android:textSize="16sp"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/inNumber"
+                            style="@style/loginTextInputLayout"
+                            android:hint="السعر"
+                            app:boxCornerRadiusBottomEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusBottomStart="@dimen/_3sdp"
+                            app:boxCornerRadiusTopEnd="@dimen/_3sdp"
+                            app:boxCornerRadiusTopStart="@dimen/_3sdp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/price"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:imeOptions="actionNext"
+                                android:inputType="numberDecimal"
+                                android:textColor="@color/purple_500"
+                                android:textSize="16sp"
+                                tools:ignore="SpeakableTextPresentCheck" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:backgroundTint="@color/teal_200"
+                    android:onClick="@{() -> fragment.saveDB()}"
+                    android:paddingHorizontal="@dimen/_60sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:text="@string/save"
+                    android:textAppearance="@style/FontBold"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="@dimen/_3sdp"
+                    tools:ignore="TextContrastCheck" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

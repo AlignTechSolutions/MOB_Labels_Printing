@@ -30,6 +30,7 @@ class OneSingleViewModel @Inject constructor() : ViewModel() {
     var labelsPrintingMutableLiveData : LiveData<List<LabelsPrinting>> = _labelsPrintingMutableLiveData
     var workbookMutableLiveData : MutableLiveData<Workbook> = MutableLiveData()
     val remainingTime: MutableLiveData<String> = MutableLiveData("")
+    var currentRequestCode = -1
 
     fun startCountDown(): Boolean {
         val time = TokenUtil.getRemainingTime(appPreferences)
