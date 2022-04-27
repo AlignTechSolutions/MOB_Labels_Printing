@@ -1,12 +1,15 @@
 package com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.view
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.alfayedoficial.kotlinutils.*
 import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.callback.DialogCallBack
@@ -46,6 +49,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.FileNotFoundException
 import java.io.IOException
 
+
 @AndroidEntryPoint
 class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , DialogCallBack ,
     LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete  {
@@ -64,6 +68,10 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     ): View{
         super.onCreateView(inflater, container, savedInstanceState)
 
+
+
+
+
         return rootView
     }
 
@@ -75,17 +83,27 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
             fragment = this@LabelsPrintingFragment
             lifecycleOwner = this@LabelsPrintingFragment
 
-            (activity as OneSingleActivity).loadingProgress(true)
+
             initRecyclerView()
 
             toolbar.apply {
                 setBaseActivityFragmentsToolbar(kuRes.getString(R.string.app_name), baseToolbar, tvToolbar)
             }
 
-            printerFactory = ThermalPrinterFactory()
-            rtPrinterKotlin = printerFactory?.create() as RTPrinter<BluetoothEdrConfigBean>?
-            rtPrinterKotlin?.setPrinterInterface(curPrinterInterface)
+            swipeRefreshLayout.setOnRefreshListener {
+                /* Call database and get all labels */
+                activityViewModel.getAllLabelsPrinting()
+            }
+
+            initPrinter()
+
         }
+    }
+
+    fun initPrinter(){
+        printerFactory = ThermalPrinterFactory()
+        rtPrinterKotlin = printerFactory?.create() as RTPrinter<BluetoothEdrConfigBean>?
+        rtPrinterKotlin?.setPrinterInterface(curPrinterInterface)
     }
 
     private fun initRecyclerView() {
@@ -174,12 +192,15 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
 
     override fun setUpViewModelStateObservers() {
         try {
+            (activity as OneSingleActivity).loadingProgress(true)
             activityViewModel.labelsPrintingMutableLiveData.observe(viewLifecycleOwner){
+                dataBinder.swipeRefreshLayout.isRefreshing = false
                 (activity as OneSingleActivity).loadingProgress(false)
                 dataBinder.apply {
                     if (it.isEmpty()){
                         vAParent.displayedChild = vAParent.indexOfChild(vAImport)
                         statusInsert = false
+
                     }else{
                         statusInsert = true
                         vAParent.displayedChild = vAParent.indexOfChild(vAHorizontalScrollView)
@@ -205,7 +226,8 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 MainScope().launch {
                     mViewModel.saveLabel(model)
                     activityViewModel.getAllLabelsPrinting()
-                    navController.navigate(R.id.labelsPrintingFragment)
+//                    navController.navigate(R.id.labelsPrintingFragment)
+                    initPrinter()
                 }
             }
 
@@ -235,10 +257,15 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         MainScope().launch {
             (activity as OneSingleActivity).activityViewModel.clearData()
         }
-        if (!EasyPermissions.hasPermissions(requireContext(),
+        if (!EasyPermissions.hasPermissions(
+                requireContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE, )) {
-            EasyPermissions.requestPermissions(requireActivity(), "Needed for the ${getString(R.string.app_name)}", PICK_FILE_RESULT_CODE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+            )) {
+            EasyPermissions.requestPermissions(
+                requireActivity(),
+                "Needed for the ${getString(R.string.app_name)}",
+                PICK_FILE_RESULT_CODE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
             )
@@ -253,13 +280,21 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         }
     }
 
+    var x = 0
     private fun onSuccess(workbook: Workbook) {
         MainScope().launch (Dispatchers.IO) {
             delay(300)
 
-            (activity as OneSingleActivity).loadingProgress(true)
+            kuInfoLog("loadingProgress", "onSuccess == true")
+            if (x == 0) {
+                x =1
+                (activity as OneSingleActivity).loadingProgress(true)
+            }
 
-            if (workbook.numberOfSheets > 0) {
+
+            kuInfoLog("loadingProgress", "onSuccess == ${ workbook.getSheetAt(0).getRow(0).physicalNumberOfCells}")
+
+            if (workbook.numberOfSheets > 0 && workbook.getSheetAt(0).getRow(0).physicalNumberOfCells == 5) {
 
                 //Return first sheet of excel. You can get all existing sheets
                 val number = workbook.numberOfSheets-1
@@ -267,23 +302,35 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                     getRow(workbook.getSheetAt(i) , i)
                 }
 
-            }
+                MainScope().launch {
+                    mViewModel.apply {
+                        saveLabelLists(labelsPrintingModels)
+                        activityViewModel.workbookMutableLiveData.value = null
 
-            MainScope().launch {
-                mViewModel.apply {
-                    saveLabelLists(labelsPrintingModels)
-                    activityViewModel.workbookMutableLiveData.value = null
+                        //update the UI
+                        delay(1500)
+                        (activity as OneSingleActivity).apply {
+                            snackBarError("تم استراد الملف بنجاح" , R.color.TemplateGreen, R.color.white)
+                            loadingProgress(false)
+                            x = 0
+                            activityViewModel.getAllLabelsPrinting()
+                            initPrinter()
+                        }
 
-                    //update the UI
-                    delay(1000)
-                    (activity as OneSingleActivity).apply {
-                        snackBarError("تم استراد الملف بنجاح" , R.color.TemplateGreen, R.color.white)
-                        loadingProgress(false)
-                        activityViewModel.getAllLabelsPrinting()
                     }
-
                 }
+
+            }else{
+                (activity as OneSingleActivity).apply {
+                    snackBarError("حدث خطأ ما فى ملف الاكسيل" , R.color.TemplateRed, R.color.white)
+                    loadingProgress(false)
+                    x = 0
+                    activityViewModel.getAllLabelsPrinting()
+                }
+
             }
+
+
 
         }
     }
@@ -310,23 +357,25 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                             if (cell.columnIndex > 0 && cell.rowIndex > 0) {
                                 when (numberOfSheets) {
                                     0 -> {
-                                        when (cell.columnIndex) {
-                                            1 -> {
-                                                if (cell.cellType == Cell.CELL_TYPE_NUMERIC){
-                                                    labelsPrintingModel.barCode = cell.numericCellValue.toInt().toString()
-                                                }else{
-                                                    labelsPrintingModel.barCode = cell.toString()
-                                                }
-                                            }
-                                            2 -> labelsPrintingModel.nameProduct = cell.toString()
-                                            3 -> {
-                                                if (cell.cellType == Cell.CELL_TYPE_NUMERIC){
-                                                    labelsPrintingModel.price = cell.numericCellValue
-                                                }
-                                                labelsPrintingModels.add(labelsPrintingModel)
+                                      try {
+                                          when (cell.columnIndex) {
+                                              1 -> {
+                                                  if (cell.cellType == Cell.CELL_TYPE_NUMERIC){
+                                                      labelsPrintingModel.barCode = cell.numericCellValue.toInt().toString()
+                                                  }else{
+                                                      labelsPrintingModel.barCode = cell.toString()
+                                                  }
+                                              }
+                                              2 -> labelsPrintingModel.nameProduct = cell.toString()
+                                              3 -> {
+                                                  if (cell.cellType == Cell.CELL_TYPE_NUMERIC){
+                                                      labelsPrintingModel.price = cell.numericCellValue
+                                                  }
+                                                  labelsPrintingModels.add(labelsPrintingModel)
 
-                                            }
-                                        }
+                                              }
+                                          }
+                                      }catch (e:Exception){}
 
                                     }
                                 }
@@ -366,19 +415,29 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         (activity as OneSingleActivity).startSessionCounter()
     }
 
-    override fun printLabel(label: LabelsPrinting){
+    override fun printLabel(label: LabelsPrinting) {
+
         if (configObj == null || rtPrinterKotlin == null || printerFactory == null
-            || txtDeviceSelected == null
-            ||txtDeviceSelectedTag == null || staticDevice == null || printEnable == null){
+            || txtDeviceSelected == null || txtDeviceSelectedTag == null || staticDevice == null || printEnable == null) {
             (activity as OneSingleActivity).showBluetoothDeviceChooseDialog()
             return
-        }else{
-            configObj = BluetoothEdrConfigBean(staticDevice)
-            val kotlinMainFragmentDialog = KotlinMainFragmentDialog().apply {
-                setLabelsPrinting(label)
+        } else {
+            val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (!mBluetoothAdapter.isEnabled) {
+                Toast.makeText(requireContext(), "من فضلك قم بفتح البلوتوث", Toast.LENGTH_LONG).show()
+                return
+            } else {
+
+                configObj = BluetoothEdrConfigBean(staticDevice)
+                val kotlinMainFragmentDialog = KotlinMainFragmentDialog().apply {
+                    setLabelsPrinting(label)
+                }
+                kotlinMainFragmentDialog.show(childFragmentManager, null)
             }
-            kotlinMainFragmentDialog.show(childFragmentManager, null)
+
         }
+
+
 
     }
 

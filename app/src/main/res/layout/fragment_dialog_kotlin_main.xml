@@ -60,11 +60,21 @@
                     android:layout_width="342dp"
                     android:layout_height="220dp"
                     android:scaleType="fitCenter"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    app:layout_constraintBottom_toTopOf="@+id/progress_bar"
                     app:layout_constraintEnd_toEndOf="@+id/etxtBarCode"
                     app:layout_constraintStart_toStartOf="@+id/etxtBarCode"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@tools:sample/avatars" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    android:layout_height="@dimen/_35sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/mgBarCode2"
+                    app:layout_constraintStart_toStartOf="@+id/mgBarCode2" />
 
                 <Button
                     android:id="@+id/tnGenerate"

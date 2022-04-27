@@ -44,6 +44,13 @@ abstract class BaseActivity<T> : AppCompatActivity() where T : ViewDataBinding {
         }
     }
 
+    val loadingProgress2: DialogLoadingFragment by lazy {
+        DialogLoadingFragment().apply {
+            setStatusMessage(this@BaseActivity.getString(R.string.please_wait))
+            isCancelable = false
+        }
+    }
+
     abstract fun onActivityCreated(dataBinder : T)
 
     final override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -15,24 +16,32 @@
         android:textColor="@color/teal_200"
         android:textStyle="bold"
         android:textSize="@dimen/_14ssp" />
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/paired_devices"
-            android:textSize="@dimen/_12ssp" />
 
         <Button
             android:id="@+id/btn_hide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hide_↑↑↑"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+            android:layout_marginHorizontal="10dp"
+            android:text="@string/hide" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_enable_bluetooth"
+            android:layout_width="wrap_content"
+            android:checked="true"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:thumb="@drawable/swith_button_thumb_1"
+            app:track="@drawable/switch_button_track" />
+    </LinearLayout>
 
     <View style="@style/BaseLine" />
 

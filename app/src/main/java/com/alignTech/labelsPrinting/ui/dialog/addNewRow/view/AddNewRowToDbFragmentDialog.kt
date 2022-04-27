@@ -34,7 +34,8 @@ class AddNewRowToDbFragmentDialog : BaseDialogFragment<FragmentDialogAddNewRowTo
         dataBinder.apply {
             fragment = this@AddNewRowToDbFragmentDialog
             lifecycleOwner = this@AddNewRowToDbFragmentDialog
-            price.setNumberNotAcceptMinus()
+            price.setNumberNotAcceptMinus( "-" , "," , " ")
+            code.setNumberNotAcceptMinus( "-" , "," , " " , ".")
         }
     }
 
@@ -50,10 +51,22 @@ class AddNewRowToDbFragmentDialog : BaseDialogFragment<FragmentDialogAddNewRowTo
             val price = price.text.toString()
 
             when {
-                barCode.isEmpty() ||  nameProduct.isEmpty()  || price.isEmpty() -> {
+                (barCode.isEmpty()  || barCode.isBlank()) &&  (nameProduct.isEmpty() || nameProduct.isBlank())  && price.isEmpty() -> {
                     inCode.error = "حقل مطلوب !"
                     inNameProduct.error = "حقل مطلوب !"
                     inNumber.error = "حقل مطلوب !"
+                }
+
+                barCode.isEmpty()  || barCode.isBlank() ->{
+                    inCode.error = "حقل مطلوب !"
+                }
+
+                nameProduct.isEmpty()  || nameProduct.isBlank() ->{
+                    inNameProduct.error = "حقل مطلوب !"
+                }
+
+                price.toDoubleOrNull() == null -> {
+                    inNumber.error = "السعر خاطئ !"
                 }
                 else -> {
                     LabelsPrinting().apply {
@@ -63,6 +76,8 @@ class AddNewRowToDbFragmentDialog : BaseDialogFragment<FragmentDialogAddNewRowTo
                     }.let {
                         saveDBCallBack.saveNewLabelsPrinting(it)
                     }
+
+
 
                     dismiss()
                 }

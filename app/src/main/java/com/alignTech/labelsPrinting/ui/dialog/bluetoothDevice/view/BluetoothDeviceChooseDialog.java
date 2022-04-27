@@ -19,8 +19,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.alignTech.labelsPrinting.R;
@@ -28,6 +30,7 @@ import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.adapter.BluetoothD
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2015/6/30.
@@ -51,7 +54,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
     private boolean mSearchInited = false;// 若为true表示搜索设备按钮已按下过，数据已初始化
     private boolean mRegistered = false;// 若为true表示接收器已注册
     private boolean isHidePairedDevlist = false;//是否隐藏配对列表
-
+    private SwitchCompat switch_enable_bluetooth;
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -61,7 +64,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@NonNull Bundle savedInstanceState) {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_choose_bluetooth_device, null);
@@ -81,6 +84,36 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
         tvSearchDevice = (TextView) view.findViewById(R.id.tv_dialog_choose_bluetooth_device_search_device);
         progressBar = (ProgressBar) view.findViewById(R.id.pb_dialog_choose_bluetooth_device_progress_bar);
         btn_hide = view.findViewById(R.id.btn_hide);
+        switch_enable_bluetooth = view.findViewById(R.id.switch_enable_bluetooth);
+
+        switch_enable_bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBluetooth(switch_enable_bluetooth.isChecked());
+            }
+        });
+    }
+
+    public void setBluetooth(boolean enable) {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        boolean isEnabled = bluetoothAdapter.isEnabled();
+        if (enable && !isEnabled) {
+            switch_enable_bluetooth.setChecked(true);
+            bluetoothAdapter.enable();
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+                initData();
+            }catch (Exception e){ }
+        }
+        else if(!enable && isEnabled) {
+            switch_enable_bluetooth.setChecked(false);
+            pairedDeviceList = new ArrayList<>();
+            pairedDeviceAdapter = new BluetoothDeviceAdapter(mContext, pairedDeviceList);
+            lvPairedDevices.setAdapter(pairedDeviceAdapter);
+            tvPairedDeviceEmpty.setVisibility(View.VISIBLE);
+            bluetoothAdapter.disable();
+        }
+
     }
 
     private void setListener() {
@@ -138,11 +171,11 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
                 if(isHidePairedDevlist){//当前是隐藏
                     isHidePairedDevlist = false;
                     lvPairedDevices.setVisibility(View.VISIBLE);
-                    btn_hide.setText("Hide_↑↑↑");
+                    btn_hide.setText(getString(R.string.hide));
                 }else{//当前是可见
                     isHidePairedDevlist = true;
                     lvPairedDevices.setVisibility(View.GONE);
-                    btn_hide.setText("Show_↓↓↓");
+                    btn_hide.setText(R.string.show);
                 }
             }
         });
@@ -150,12 +183,29 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
 
     private void initData() {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        pairedDeviceList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
-        if (pairedDeviceList.size() == 0) {
-            tvPairedDeviceEmpty.setVisibility(View.VISIBLE);
+        if (!mBluetoothAdapter.isEnabled()){
+            switch_enable_bluetooth.setChecked(false);
+            Toast.makeText(requireContext() , "من فضلك قم بفتح البلوتوث" , Toast.LENGTH_LONG).show();
+        }else {
+            switch_enable_bluetooth.setChecked(true);
+            pairedDeviceList = new ArrayList<>();
+            List<BluetoothDevice> BondedDevicesList = new ArrayList<>(mBluetoothAdapter.getBondedDevices());
+            for (int i =0; i <= BondedDevicesList.size()-1; i++) {
+                if (BondedDevicesList.get(i).getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING) {
+                    pairedDeviceList.add(BondedDevicesList.get(i));
+                }
+            }
+            if (pairedDeviceList.size() == 0) {
+                tvPairedDeviceEmpty.setVisibility(View.VISIBLE);
+            }else {
+                tvPairedDeviceEmpty.setVisibility(View.GONE);
+            }
+            pairedDeviceAdapter = new BluetoothDeviceAdapter(mContext, pairedDeviceList);
+            lvPairedDevices.setAdapter(pairedDeviceAdapter);
         }
-        pairedDeviceAdapter = new BluetoothDeviceAdapter(mContext, pairedDeviceList);
-        lvPairedDevices.setAdapter(pairedDeviceAdapter);
+
+    }
+
     }
 
     @Override
@@ -205,6 +255,8 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
             }
         }
     }
+
+
 
 }
 

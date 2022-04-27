@@ -27,6 +27,7 @@ import com.alignTech.labelsPrinting.domain.network.networkSettings.ServerCallBac
 import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.BluetoothDeviceChooseDialog
 import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.TAG
 import com.alignTech.labelsPrinting.ui.dialog.changePassword.view.ChangePasswordDialog
+import com.alignTech.labelsPrinting.ui.dialog.loading.view.DialogLoadingFragment
 import com.alignTech.labelsPrinting.ui.dialog.logout.view.DialogLogoutFragment
 import com.alignTech.labelsPrinting.ui.dialog.resetDatabase.view.DialogResetDatabaseFragment
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BaseEnum
@@ -58,10 +59,12 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
     private val storageHelper = SimpleStorageHelper(this)
     private var closeStatus : Boolean = false
 
+
     private val permissionsList = arrayOf(
         Manifest.permission.VIBRATE,
         Manifest.permission.BLUETOOTH_PRIVILEGED,
         Manifest.permission.BLUETOOTH,
+//        Manifest.permission.NEARBY_WIFI_DEVICES
     ).also {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Manifest.permission.ACCESS_NOTIFICATION_POLICY
@@ -258,9 +261,12 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
         rtPrinterKotlin!!.setPrinterInterface(printerInterface)
         try {
             rtPrinterKotlin!!.connect(bluetoothEdrConfigBean)
+            snackBarError(getString(R.string.added_device_successfully), R.color.TemplateGreen, R.color.white)
         } catch (e: Exception) {
             e.printStackTrace()
             e.message?.let { Log.d(TAG, it) }
+            snackBarError(getString(R.string.could_not_pair), R.color.TemplateRed, R.color.white)
+
         } finally {
         }
 
@@ -282,6 +288,7 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
             loadingProgress.dismiss()
         }
     }
+
 
     fun logOut() {
         val logoutData = LogoutData(TokenUtil.getTokenId(appPreferences), TokenUtil.getJobId(appPreferences))

@@ -127,25 +127,17 @@ fun String.kuIsDoubleNumber(): Boolean =  try {
     false
 }
 
-fun EditText.setNumberNotAcceptMinus() {
+fun EditText.setNumberNotAcceptMinus(vararg validation : String) {
     addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun afterTextChanged(text: Editable?) {
-            val number: String
-            when {
-                text?.contains("-")!! -> {
-                    number = text.toString().replace("-", "")
-                    setText(number)
-                }
-                text.contains(",") -> {
-                    number = text.toString().replace(",", "")
-                    setText(number)
-                }
-                text.contains(" ") -> {
-                    number = text.toString().replace(" ", "")
+            var number: String
+            validation.forEach {
+                if (text?.contains(it)!!) {
+                    number = text.toString().replace(it, "")
                     setText(number)
                 }
             }

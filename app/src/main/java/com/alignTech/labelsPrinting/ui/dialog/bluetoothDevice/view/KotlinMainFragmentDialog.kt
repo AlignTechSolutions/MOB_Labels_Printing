@@ -191,7 +191,15 @@ class KotlinMainFragmentDialog :BaseDialogFragment<FragmentDialogKotlinMainBindi
             cmd.append(cmd.lfcrCmd)
             cmd.append(cmd.lfcrCmd)
             if (rtPrinterKotlin != null) {
-                rtPrinterKotlin?.writeMsg(cmd.appendCmds) //Sync Write
+                try {
+                    rtPrinterKotlin?.writeMsg(cmd.appendCmds) //Sync Write
+                }catch (e:Exception){
+                    MainScope().launch {
+                        e.printStackTrace()
+                        kuToast("يوجد خطأ فى هذا الصنف الرجاء إعادة ادراج الصنف مره اخرى")
+                    }
+
+                }
             }
         }.start()
 

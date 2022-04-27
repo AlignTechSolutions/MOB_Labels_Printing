@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import com.alfayedoficial.kotlinutils.kuInfoLog
 import com.alfayedoficial.kotlinutils.kuRes
 import com.alfayedoficial.kotlinutils.kuSnackBarError
 import com.alignTech.labelsPrinting.R
