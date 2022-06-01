@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="fragment"
+            type="com.alignTech.labelsPrinting.ui.dialog.countPrint.view.DialogCountPrinterFragment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.dialog.countPrint.view.DialogCountPrinterFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="@dimen/_8sdp"
+            app:contentPadding="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/textMediumStyle"
+                        android:id="@+id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:textAlignment="viewStart"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/config_print_title"
+                        app:drawableStartCompat="@drawable/ic_printer" />
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/countPrintContainer"
+                            style="@style/loginTextInputLayout"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_height="0dp"
+                            android:textAlignment="viewStart"
+                            android:hint="@string/p_count_of_print">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/countPrintEt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="viewStart"
+                                android:autoSizeTextType="uniform"
+                                android:autofillHints="false"
+                                android:inputType="phone"
+                                android:imeOptions="actionNext"
+                                android:textColor="@color/purple_500"
+                                android:textSize="16sp"
+                                tools:ignore="SpeakableTextPresentCheck"
+                                tools:targetApi="o" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/onClickCountPrint"
+                            style="@style/textRegularStyle"
+                            android:layout_width="match_parent"
+                            android:layout_marginVertical="@dimen/_8sdp"
+                            android:layout_marginHorizontal="@dimen/_30sdp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/print"
+                            android:textColor="@color/white"
+                            app:cornerRadius="@dimen/_8sdp"
+                            android:backgroundTint="@color/TemplateGreen"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                    </LinearLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

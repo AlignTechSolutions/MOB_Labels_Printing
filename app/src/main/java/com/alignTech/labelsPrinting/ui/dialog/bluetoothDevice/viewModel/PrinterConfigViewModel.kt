@@ -52,6 +52,7 @@ class PrinterConfigViewModel @Inject  constructor() : ViewModel() {
             val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
             if (device?.bondState == BluetoothDevice.BOND_BONDED) {
               saveDeviceMacAddress(device.address, device.name, true, context)
+              appPreferences.setValue("BluetoothDevice" , device)
             }
           }
         }
@@ -113,6 +114,8 @@ class PrinterConfigViewModel @Inject  constructor() : ViewModel() {
         }
       } else if (device.bondState == BluetoothDevice.BOND_BONDED) {
         saveDeviceMacAddress(device.address, device.name, false, baseActivity)
+        appPreferences.setValue("BluetoothDevice" , device)
+
       }
 
     } else baseActivity.kuToast(baseActivity.resources.getString(R.string.please_select_printer))

@@ -33,10 +33,17 @@ abstract class BaseFragment<T> : Fragment() where T: ViewDataBinding {
 
     @get:LayoutRes
     protected abstract val layoutResourceLayout : Int
-    protected lateinit var navController: NavController
-    protected lateinit var dataBinder : T
-    protected lateinit var rootView : View
-//    @Inject protected lateinit var  extensions: KUExtensionsApp
+    private var _dataBinder : T? = null
+    private var _rootView : View? = null
+    private var _navController: NavController? = null
+
+    protected val dataBinder : T
+        get() = _dataBinder!!
+    protected val navController: NavController
+        get() = _navController!!
+    protected val rootView : View
+        get() = _rootView!!
+
     @Inject protected lateinit var  appPreferences: KUPreferences
     @Inject protected lateinit var  retrofit: Retrofit
 
@@ -52,10 +59,10 @@ abstract class BaseFragment<T> : Fragment() where T: ViewDataBinding {
         savedInstanceState: Bundle?
     ): View? {
         this@BaseFragment.layoutResourceLayout.let {
-            dataBinder = DataBindingUtil.inflate(inflater, it, container, false)
+            _dataBinder = DataBindingUtil.inflate(inflater, it, container, false)
             this@BaseFragment.onFragmentCreated(dataBinder)
             setUpViewModelStateObservers()
-            rootView = dataBinder.root
+            _rootView = dataBinder.root
             return rootView
         }
     }
@@ -64,7 +71,7 @@ abstract class BaseFragment<T> : Fragment() where T: ViewDataBinding {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = findNavController()
+        _navController = findNavController()
     }
 
     abstract fun setUpViewModelStateObservers()

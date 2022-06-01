@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alignTech.labelsPrinting.core.util.setWindowParams
@@ -23,8 +24,16 @@ abstract class BaseSheetDialogFragment<T> : BottomSheetDialogFragment() where T:
 
     @get:LayoutRes
     protected abstract val layoutResourceLayout : Int
-    protected lateinit var dataBinder : T
-    protected lateinit var rootView : View
+    private var _dataBinder : T? = null
+    private var _rootView : View? = null
+    private var _navController: NavController? = null
+
+    protected val dataBinder : T
+        get() = _dataBinder!!
+    protected val navController: NavController
+        get() = _navController!!
+    protected val rootView : View
+        get() = _rootView!!
 
 
     abstract fun onFragmentCreated(dataBinder : T)
@@ -41,9 +50,9 @@ abstract class BaseSheetDialogFragment<T> : BottomSheetDialogFragment() where T:
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this@BaseSheetDialogFragment.layoutResourceLayout.let {
-            dataBinder = DataBindingUtil.inflate(inflater, it, container, false)
+            _dataBinder = DataBindingUtil.inflate(inflater, it, container, false)
             this@BaseSheetDialogFragment.onFragmentCreated(dataBinder)
-            rootView = dataBinder.root
+            _rootView = dataBinder.root
 
             return rootView
         }

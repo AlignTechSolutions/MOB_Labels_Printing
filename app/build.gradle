@@ -187,5 +187,10 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide_Version"
     kapt "com.github.bumptech.glide:compiler:$glide_Version"
 
+    var PERMISSION_DISPATCHER = "4.8.0"
+    implementation "com.github.permissions-dispatcher:permissionsdispatcher:${PERMISSION_DISPATCHER}"
+    kapt "com.github.permissions-dispatcher:permissionsdispatcher-processor:${PERMISSION_DISPATCHER}"
+
+
 
 }

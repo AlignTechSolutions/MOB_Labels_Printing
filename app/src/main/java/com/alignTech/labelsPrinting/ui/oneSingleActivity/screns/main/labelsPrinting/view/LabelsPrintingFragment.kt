@@ -1,41 +1,44 @@
 package com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.view
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.alfayedoficial.kotlinutils.*
 import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.callback.DialogCallBack
 import com.alignTech.labelsPrinting.callback.OnDelete
 import com.alignTech.labelsPrinting.callback.SaveDBCallBack
 import com.alignTech.labelsPrinting.core.base.view.BaseFragment
-import com.alignTech.labelsPrinting.core.util.AppConstants.PICK_FILE_RESULT_CODE
+import com.alignTech.labelsPrinting.core.util.ExtensionsApp
 import com.alignTech.labelsPrinting.core.util.setBaseActivityFragmentsToolbar
 import com.alignTech.labelsPrinting.databinding.FragmentLabelsPrintingBinding
 import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
 import com.alignTech.labelsPrinting.ui.dialog.addNewRow.view.AddNewRowToDbFragmentDialog
-import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.KotlinMainFragmentDialog
+import com.alignTech.labelsPrinting.ui.dialog.configPrint.view.PrintConfig
+import com.alignTech.labelsPrinting.ui.dialog.countPrint.view.DialogCountPrinterFragment
 import com.alignTech.labelsPrinting.ui.dialog.importExcel.view.DialogImportExcelFragment
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.LabelsPrintingTableRvAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.NameProductAutoCompleteAdapter
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateBarcodeWriter
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BluetoothUtils
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.viewModel.LabelsPrintingViewModel
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.configObj
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.curPrinterInterface
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.printEnable
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.printerFactory
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.rtPrinterKotlin
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.staticDevice
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.txtDeviceSelected
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.txtDeviceSelectedTag
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.inflateConfigPrinterDialogWithPermissionCheck
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
 import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory
 import com.rt.printerlibrary.printer.RTPrinter
@@ -45,14 +48,16 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
-import pub.devrel.easypermissions.EasyPermissions
+import permissions.dispatcher.*
 import java.io.FileNotFoundException
 import java.io.IOException
+import javax.inject.Inject
 
-
+@RuntimePermissions
 @AndroidEntryPoint
 class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , DialogCallBack ,
-    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete  {
+    LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete ,
+    BluetoothUtils.OnBluetoothUtilsListener {
 
     private val activityViewModel : OneSingleViewModel by activityViewModels()
     private val mViewModel : LabelsPrintingViewModel by viewModels()
@@ -61,15 +66,78 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     private lateinit var adapterNameProductAutoComplete: NameProductAutoCompleteAdapter
     private var statusInsert = true
 
+    @Inject
+    lateinit var bluetoothUtils : BluetoothUtils
 
+    // handle bluetooth config
+    /************* showConnectDialog ****************/
+    fun showBluetoothDeviceChooseDialog(){
+        dataBinder.apply {
+            bluetoothUtils.showBluetoothDeviceChooseDialog({name ->
+                tvDeviceSelected.text = name
+            },{tag ->
+                tvDeviceSelected.tag = tag
+            },{ enable->
+                btnConnect.isEnabled = !enable
+                btnDisConnect.isEnabled = enable
+            })
+        }
+
+    }
+
+    /************* showConnectedListDialog ****************/
+    fun showConnectedListDialog(){
+        dataBinder.apply {
+            bluetoothUtils.showConnectedListDialog(
+                {name ->
+                    tvDeviceSelected.text = name
+                },{tag ->
+                    tvDeviceSelected.tag = tag
+                },{ enable->
+                    btnConnect.isEnabled = !enable
+                    btnDisConnect.isEnabled = enable
+                })
+        }
+
+    }
+
+    /************* showConnectedListDialog ****************/
+    fun doConnect(){
+        dataBinder.apply {
+            bluetoothUtils.doConnect {
+                pbConnect.kuShow()
+            }
+        }
+
+    }
+
+    /************* showConnectedListDialog ****************/
+    fun doDisConnect(){
+        dataBinder.apply {
+            bluetoothUtils.doDisConnect({name ->
+                tvDeviceSelected.text = name
+            },{tag ->
+                tvDeviceSelected.tag = tag
+            },{ enable->
+                btnConnect.isEnabled = !enable
+                btnDisConnect.isEnabled = enable
+            })
+        }
+
+    }
+
+    // handle bluetooth config
+
+    private val applicationSettingsScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            inflateImportBarcodeDialog()
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View{
         super.onCreateView(inflater, container, savedInstanceState)
-
-
-
 
 
         return rootView
@@ -95,7 +163,13 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 activityViewModel.getAllLabelsPrinting()
             }
 
-            initPrinter()
+
+            vAImport.setOnClickListener {
+                inflateImportBarcodeDialogWithPermissionCheck()
+            }
+
+            bluetoothUtils.setActivity(activity as OneSingleActivity)
+            bluetoothUtils.setOnBluetoothUtilsListener(this@LabelsPrintingFragment)
 
         }
     }
@@ -239,15 +313,57 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         if (statusInsert){
             saveDB()
         }else{
-            inflateImportBarcodeDialog()
+            inflateImportBarcodeDialogWithPermissionCheck()
         }
     }
 
+    // Mark -*- handle Permissions
+    // NeedsPermission method is called when the user has not granted the permission to the app.
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE,)
     fun inflateImportBarcodeDialog(){
         val dialog = DialogImportExcelFragment()
         dialog.initDialogCallBack(this)
         dialog.show(requireActivity().supportFragmentManager ,dialog.tag )
     }
+
+    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun onRationaleAskStoragePermission(request: PermissionRequest) {
+        // Show the rationale
+        MaterialAlertDialogBuilder(dataBinder.root.context)
+            .setTitle("إذن الصلاحيات")
+            .setMessage("إذن تصريح الوصول إلى الملفات.")
+            .setPositiveButton("موافق") { dialog, _ ->
+                request.proceed()
+                dialog.dismiss()
+            }
+            .setNegativeButton("إلغاء") { dialog, _ ->
+                // Do nothing
+                request.cancel()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    // OnPermissionDenied method is called if the user has denied the permission
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun onDeniedAskStoragePermission() {
+        // Do nothing
+        Toast.makeText(dataBinder.root.context, "إذن تصريح الوصول إلى الملفات مرفوض.", Toast.LENGTH_SHORT).show()
+    }
+
+    // OnNeverAskAgain method is called if the user has denied the permission and checked "Never ask again"
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE)
+    fun onNeverAskAgainAskStoragePermission() {
+        // Do nothing
+        kuInfoLog("TestPermission","onNeverAskAgainAskStoragePermission")
+        val onApplicationSettings = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        onApplicationSettings.data = Uri.parse("package:${requireActivity().packageName}")
+        applicationSettingsScreen.launch(onApplicationSettings)
+    }
+
+
+    // Mark -*- handle Permissions
+    // NeedsPermission method is called when the user has not granted the permission to the app.
 
     override fun dialogOnClick(idView: Int) {
         importExcelFile()
@@ -255,22 +371,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
 
     private fun importExcelFile() {
         MainScope().launch {
-            (activity as OneSingleActivity).activityViewModel.clearData()
-        }
-        if (!EasyPermissions.hasPermissions(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-            )) {
-            EasyPermissions.requestPermissions(
-                requireActivity(),
-                "Needed for the ${getString(R.string.app_name)}",
-                PICK_FILE_RESULT_CODE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-            )
-            return
-        }else{
+            activityViewModel.clearData()
             (activity as OneSingleActivity).openFilePicker()
             activityViewModel.workbookMutableLiveData.observe(viewLifecycleOwner){
                 it?.let {
@@ -278,6 +379,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 }
             }
         }
+
     }
 
     var x = 0
@@ -401,7 +503,6 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     }
 
     override fun deleteLabel(localId: Int, barcode: String) {
-
         runBlocking {
             val job = launch { mViewModel.deleteLabel(localId) }
             job.join()
@@ -412,39 +513,74 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
 
     override fun onResume() {
         super.onResume()
-        (activity as OneSingleActivity).startSessionCounter()
+        //TODO back session
+//        (activity as OneSingleActivity).startSessionCounter()
     }
 
     override fun printLabel(label: LabelsPrinting) {
+        val config = ExtensionsApp.kuGetCustomModel(appPreferences, PrintConfig::class.java, "printConfig")
+//        setStaticDevice(getBluetoothNameDevice(device?.macAddressPrinter))
+        (activity as OneSingleActivity).apply {
+            if(bluetoothUtils.isBluetoothConnected() && config != null &&  config.barcodeFormatConfig != null){
 
-        if (configObj == null || rtPrinterKotlin == null || printerFactory == null
-            || txtDeviceSelected == null || txtDeviceSelectedTag == null || staticDevice == null || printEnable == null) {
-            (activity as OneSingleActivity).showBluetoothDeviceChooseDialog()
-            return
-        } else {
-            val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            if (!mBluetoothAdapter.isEnabled) {
-                Toast.makeText(requireContext(), "من فضلك قم بفتح البلوتوث", Toast.LENGTH_LONG).show()
-                return
-            } else {
-
-                configObj = BluetoothEdrConfigBean(staticDevice)
-                val kotlinMainFragmentDialog = KotlinMainFragmentDialog().apply {
-                    setLabelsPrinting(label)
+                MainScope().launch {
+                    val dialog = DialogCountPrinterFragment()
+                    dialog.show(supportFragmentManager ,dialog.tag )
+                    delay(500 )
+                    dialog.setCount(config.countPrint){countPrint ->
+                        for (i in 0 until countPrint){
+                            printLabelOrder(label , config)
+                        }
+                    }
                 }
-                kotlinMainFragmentDialog.show(childFragmentManager, null)
+            }else{
+                inflateConfigPrinterDialogWithPermissionCheck()
             }
 
         }
 
+    }
 
+    private fun printLabelOrder(label: LabelsPrinting, config: PrintConfig) {
+        try {
+            val width = bluetoothUtils.convertToPx(config.unitType , config.width , resources.displayMetrics)
+            val height = bluetoothUtils.convertToPx(config.unitType , config.height , resources.displayMetrics)
+
+            val bitmap = generateBarcodeWriter(  "123456789012" , width, height,config.barcodeFormatConfig!!.barcodeType!!)
+            dataBinder.mgBarCode.setImageBitmap(bitmap)
+            bluetoothUtils.printEscCommand(bitmap!!){
+                if (it.result){
+                    snackBarError(it.msg , R.color.TemplateGreen, R.color.white)
+                }else{
+                    snackBarError(it.msg , R.color.TemplateRed, R.color.white)
+                }
+            }
+        }catch (e:Exception){
+            snackBarError("حدث خطأ ما فى الطباعة, الرجاء اتباع تعليمات الطباعة السليمه52" , R.color.TemplateRed, R.color.white)
+        }
 
     }
 
+    override fun onBluetoothUtilsListener(name: String) {
+        dataBinder.tvDeviceSelected.text = name
+    }
 
+    override fun onBluetoothUtilsListener(tag: Int) {
+        dataBinder.tvDeviceSelected.tag = tag
+    }
 
+    override fun onBluetoothUtilsListener(enable: Boolean) {
+        dataBinder.apply {
+            btnConnect.isEnabled = !enable
+            btnDisConnect.isEnabled = enable
+        }
+    }
 
-
+    override fun onBluetoothUtilsProgress(visibility: Boolean) {
+        dataBinder.apply {
+            if (visibility) pbConnect.kuShow() else pbConnect.kuHide()
+        }
+    }
 
 
 }

@@ -43,9 +43,12 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/dialog_choose_bluetooth_device.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_add_new_row_to_db_dialog.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_auth.xml" value="0.3625" />
+        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_config_print.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_add_new_row_to_db.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_add_new_to_db.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_bluetooth_device_choose.xml" value="0.1824712643678161" />
+        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_config_printer.xml" value="0.3625" />
+        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_count_printer.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_import_excel.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_kotlin_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_loading.xml" value="0.3625" />

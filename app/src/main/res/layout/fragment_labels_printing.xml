@@ -28,6 +28,80 @@
                 android:id="@+id/toolbar"
                 layout="@layout/base_tool_bar" />
 
+            <LinearLayout
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lyConfigScanner"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_connected_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->fragment.showConnectedListDialog()}"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/show_conncected_devices" />
+
+                <TextView
+                    android:id="@+id/tvDeviceSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->fragment.showBluetoothDeviceChooseDialog()}"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/athens_gray"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:tag="-1"
+                    android:text="@string/please_connect"
+                    android:textSize="18sp" />
+
+                <ProgressBar
+                    android:id="@+id/pbConnect"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_connect"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{()->fragment.doConnect()}"
+                        android:layout_weight="1"
+                        android:text="@string/connect" />
+
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="0dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_disConnect"
+                        android:layout_width="0dp"
+                        android:onClick="@{()->fragment.doDisConnect()}"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:text="@string/disconnect" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/mgBarCode"
+                    android:layout_width="242dp"
+                    android:layout_height="71dp"
+                    android:layout_gravity="center"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </LinearLayout>
+
+
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/lySearch"
                 android:layout_width="match_parent"
@@ -72,7 +146,6 @@
                     android:layout_gravity="center"
                     android:elevation="@dimen/_8sdp"
                     android:gravity="center"
-                    android:onClick="@{()-> fragment.inflateImportBarcodeDialog()}"
                     app:cardCornerRadius="@dimen/_10sdp"
                     app:cardElevation="@dimen/_3sdp"
                     app:cardMaxElevation="@dimen/_2sdp"
@@ -135,7 +208,7 @@
                                android:id="@+id/rvLabelsPrinting"
                                layout="@layout/base_recyclerview"
                                android:layout_width="0dp"
-                               android:layout_height="match_parent"
+                               android:layout_height="0dp"
                                app:layout_constraintBottom_toBottomOf="parent"
                                app:layout_constraintEnd_toEndOf="@+id/headerRvLabelsPrinting"
                                app:layout_constraintStart_toStartOf="@+id/headerRvLabelsPrinting"

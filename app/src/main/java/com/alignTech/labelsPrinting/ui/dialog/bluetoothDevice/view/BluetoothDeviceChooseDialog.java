@@ -206,7 +206,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
 
     }
 
-    }
+
 
     @Override
     public void onDismiss(DialogInterface dialog) {

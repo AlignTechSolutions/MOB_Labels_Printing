@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="fragment"
+            type="com.alignTech.labelsPrinting.ui.dialog.configPrint.view.DialogConfigPrinterFragment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.dialog.configPrint.view.DialogConfigPrinterFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="@dimen/_8sdp"
+            app:contentPadding="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/imgBtnClose"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="close"
+                        android:onClick="@{() -> fragment.dialogCancel()}"
+                        android:src="@drawable/ic_close"
+                        android:textAlignment="viewStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        style="@style/textMediumStyle"
+                        android:id="@+id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/imgBtnClose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:textAlignment="viewStart"
+                        android:layout_marginTop="45dp"
+                        android:text="@string/config_print_title"
+                        app:drawableStartCompat="@drawable/ic_printer" />
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/textRegularStyle"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="معلومات الطباعة الحالية "
+                                android:textSize="14sp"
+                                android:textAlignment="viewStart"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <com.google.android.material.button.MaterialButton
+                                style="@style/textRegularStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_choose_print"
+                                android:onClick="@{() -> fragment.showBluetoothDeviceChooseDialog()}"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                android:textAlignment="viewStart"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvPName"
+                            style="@style/textMediumStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/p_name"
+                            android:textSize="14sp"
+                            android:textColor="@color/TemplateGreen"
+                            android:textAlignment="viewStart" />
+
+                        <ProgressBar
+                            android:id="@+id/pbConnect"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center_horizontal"
+                            android:visibility="gone"/>
+
+                        <LinearLayout
+                            android:id="@+id/lyConnection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_connect"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="@{()->fragment.doConnect()}"
+                                android:backgroundTint="@color/TemplateGreen"
+                                android:text="@string/connect" />
+
+                            <View
+                                android:layout_width="10dp"
+                                android:layout_height="0dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_disConnect"
+                                android:layout_width="0dp"
+                                android:onClick="@{()->fragment.doDisConnect()}"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:enabled="false"
+                                android:text="@string/disconnect" />
+
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:id="@+id/tvPConnectedDate"
+                            style="@style/textMediumStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/TemplateRed"
+                            android:text="@string/p_date"
+                            android:textSize="14sp"
+                            android:textAlignment="viewStart" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_connected_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> fragment.showConnectedListDialog()}"
+                            android:text="@string/show_conncected_devices" />
+
+
+
+                        <TextView
+                            style="@style/textRegularStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:text="@string/p_measuring_settings"
+                            android:textSize="14sp"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rbPMeasurementM"
+                                android:layout_width="0dp"
+                                android:textAlignment="viewStart"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_m"/>
+
+                            <RadioButton
+                                android:id="@+id/rbPMeasurementCm"
+                                android:layout_width="0dp"
+                                android:textAlignment="viewStart"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_cm"/>
+
+
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/height_container"
+                                android:layout_weight="1"
+                                android:layout_height="0dp"
+                                style="@style/loginTextInputLayout"
+                                android:textAlignment="viewStart"
+                                app:helperText="ملي / سنتى"
+                                android:hint="@string/p_height">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/height_et"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autoSizeTextType="uniform"
+                                    android:autofillHints="false"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionNext"
+                                    android:textColor="@color/purple_500"
+                                    android:textSize="16sp"
+                                    tools:ignore="SpeakableTextPresentCheck"
+                                    android:textAlignment="viewStart"
+                                    tools:targetApi="o" />
+
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/width_container"
+                                style="@style/loginTextInputLayout"
+                                android:layout_weight="1"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:layout_height="0dp"
+                                android:textAlignment="viewStart"
+                                app:helperText="ملي / سنتى"
+                                android:hint="@string/p_width">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/width_et"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="viewStart"
+                                    android:autoSizeTextType="uniform"
+                                    android:autofillHints="false"
+                                    android:inputType="numberDecimal"
+                                    android:imeOptions="actionNext"
+                                    android:textColor="@color/purple_500"
+                                    android:textSize="16sp"
+                                    tools:ignore="SpeakableTextPresentCheck"
+                                    tools:targetApi="o" />
+
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:alpha="0.3"
+                            android:layout_marginVertical="@dimen/_4sdp"
+                            android:background="@color/black"/>
+
+
+                        <TextView
+                            style="@style/textRegularStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/p_shape_settings"
+                            android:textAlignment="viewStart"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rvVertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:textAlignment="viewStart"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_vertical"/>
+
+
+                            <RadioButton
+                                android:id="@+id/rvHorizontal"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:textAlignment="viewStart"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_horizontal"/>
+
+
+
+
+                        </RadioGroup>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:alpha="0.3"
+                            android:layout_marginVertical="@dimen/_4sdp"
+                            android:background="@color/black"/>
+
+                        <TextView
+                            style="@style/textRegularStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="viewStart"
+                            android:text="@string/p_barcode_settings"
+                            android:textSize="14sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_4sdp"
+                            android:layout_marginEnd="5dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/lySearch"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:cardCornerRadius="@dimen/_3sdp"
+                                android:layout_weight="1"
+                                app:cardElevation="@dimen/_2sdp">
+
+                                <com.alfayedoficial.kotlinutils.KUAutoComplete
+                                    android:id="@+id/tvSearchNamePrint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/grey_border_background"
+                                    android:backgroundTint="@color/athens_gray"
+                                    android:drawableStart="@drawable/ic_baseline_search_24"
+                                    android:drawablePadding="@dimen/_5sdp"
+                                    android:fontFamily="@font/regular"
+                                    android:gravity="start|center"
+                                    android:hint="@string/p_choose_barcode"
+                                    android:imeOptions="actionSearch"
+                                    android:inputType="text"
+                                    android:padding="@dimen/_8sdp"
+                                    android:textAlignment="viewStart"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_13ssp"
+                                    app:drawableTint="@color/TemplateMidGrey" />
+                            </com.google.android.material.card.MaterialCardView>
+
+
+                            <ImageButton
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:background="@android:color/transparent"
+                                android:contentDescription="close"
+                                android:onClick="@{() -> fragment.clearBarcode()}"
+                                android:src="@drawable/ic_close"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:textAlignment="viewStart"
+                                app:tint="@color/TemplateMidGrey" />
+
+
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:alpha="0.3"
+                            android:layout_marginVertical="@dimen/_4sdp"
+                            android:background="@color/black"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/countPrintContainer"
+                            style="@style/loginTextInputLayout"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_height="0dp"
+                            android:textAlignment="viewStart"
+                            android:hint="@string/p_count_of_print">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/countPrintEt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="viewStart"
+                                android:autoSizeTextType="uniform"
+                                android:autofillHints="false"
+                                android:inputType="phone"
+                                android:imeOptions="actionNext"
+                                android:textColor="@color/purple_500"
+                                android:textSize="16sp"
+                                tools:ignore="SpeakableTextPresentCheck"
+                                tools:targetApi="o" />
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/textRegularStyle"
+                            android:layout_width="match_parent"
+                            android:layout_marginVertical="@dimen/_8sdp"
+                            android:layout_marginHorizontal="@dimen/_30sdp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/p_save_settings_print"
+                            android:textColor="@color/white"
+                            android:onClick="@{()->fragment.saveConfig()}"
+                            app:cornerRadius="@dimen/_8sdp"
+                            android:backgroundTint="@color/TemplateGreen"
+                            android:textSize="14sp"
+                            android:textAlignment="center" />
+
+                    </LinearLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

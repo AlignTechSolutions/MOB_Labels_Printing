@@ -33,9 +33,16 @@ abstract class BaseActivity<T> : AppCompatActivity() where T : ViewDataBinding {
     protected abstract val layoutResourceId : Int
     @Inject
     protected lateinit var  appPreferences: KUPreferences
-    protected lateinit var dataBinder: T
-    lateinit var appBarConfiguration: AppBarConfiguration
-    lateinit var navController: NavController
+    private var _dataBinder : T? = null
+    var _appBarConfiguration: AppBarConfiguration? = null
+    var _navController: NavController? = null
+
+    protected val dataBinder: T
+        get() = _dataBinder!!
+    val appBarConfiguration: AppBarConfiguration
+        get() = _appBarConfiguration!!
+    val navController: NavController
+        get() = _navController!!
 
     val loadingProgress: DialogLoadingFragment by lazy {
         DialogLoadingFragment().apply {
@@ -69,7 +76,7 @@ abstract class BaseActivity<T> : AppCompatActivity() where T : ViewDataBinding {
     private fun initial(){
         this@BaseActivity.layoutResourceId.let {
             val dataBinder = DataBindingUtil.setContentView<T>(this@BaseActivity , it)
-            this.dataBinder = dataBinder
+            this._dataBinder = dataBinder
             this@BaseActivity.onActivityCreated(dataBinder)
         }
     }
@@ -113,6 +120,12 @@ abstract class BaseActivity<T> : AppCompatActivity() where T : ViewDataBinding {
 
     open fun setUpViewModelStateObservers(){}
 
-
+    override fun onDestroy() {
+        _dataBinder?.unbind()
+        _dataBinder = null
+        _appBarConfiguration = null
+        _navController = null
+        super.onDestroy()
+    }
 
 }

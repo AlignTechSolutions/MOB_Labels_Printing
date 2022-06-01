@@ -2,12 +2,19 @@ package com.alignTech.labelsPrinting.ui.oneSingleActivity.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothDevice
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -19,6 +26,7 @@ import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.R.id
 import com.alignTech.labelsPrinting.callback.DialogCallBack
 import com.alignTech.labelsPrinting.core.base.view.BaseActivity
+import com.alignTech.labelsPrinting.core.util.ExtensionsApp
 import com.alignTech.labelsPrinting.core.util.PermissionUtil
 import com.alignTech.labelsPrinting.core.util.TokenUtil
 import com.alignTech.labelsPrinting.databinding.ActivityOneSingleBinding
@@ -27,12 +35,14 @@ import com.alignTech.labelsPrinting.domain.network.networkSettings.ServerCallBac
 import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.BluetoothDeviceChooseDialog
 import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.TAG
 import com.alignTech.labelsPrinting.ui.dialog.changePassword.view.ChangePasswordDialog
-import com.alignTech.labelsPrinting.ui.dialog.loading.view.DialogLoadingFragment
+import com.alignTech.labelsPrinting.ui.dialog.configPrint.view.DialogConfigPrinterFragment
 import com.alignTech.labelsPrinting.ui.dialog.logout.view.DialogLogoutFragment
 import com.alignTech.labelsPrinting.ui.dialog.resetDatabase.view.DialogResetDatabaseFragment
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BaseEnum
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BluetoothUtils
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
 import com.anggrayudi.storage.SimpleStorageHelper
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
 import com.rt.printerlibrary.connect.PrinterInterface
 import com.rt.printerlibrary.enumerate.CommonEnum
@@ -49,8 +59,11 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.xmlbeans.impl.piccolo.io.FileFormatException
+import permissions.dispatcher.*
 import java.lang.reflect.InvocationTargetException
+import javax.inject.Inject
 
+@RuntimePermissions
 @AndroidEntryPoint
 class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallBack ,  PermissionUtil.PermissionListener ,
     PrinterObserver {
@@ -58,17 +71,11 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
     val activityViewModel : OneSingleViewModel by viewModels()
     private val storageHelper = SimpleStorageHelper(this)
     private var closeStatus : Boolean = false
+    @Inject
+    lateinit var bluetoothUtils : BluetoothUtils
 
 
-    private val permissionsList = arrayOf(
-        Manifest.permission.VIBRATE,
-        Manifest.permission.BLUETOOTH_PRIVILEGED,
-        Manifest.permission.BLUETOOTH,
-//        Manifest.permission.NEARBY_WIFI_DEVICES
-    ).also {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Manifest.permission.ACCESS_NOTIFICATION_POLICY
-        }
+    private val permissionsList = arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED).also {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
              Manifest.permission.BLUETOOTH_CONNECT ;  Manifest.permission.BLUETOOTH_SCAN
         }
@@ -81,11 +88,6 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionUtil.onRequestPermissionsResult(activityViewModel.currentRequestCode, requestCode, permissions, grantResults, this)
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,9 +139,9 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
            lifecycleOwner = this@OneSingleActivity
 
            val navHostFragment = supportFragmentManager.findFragmentById(id.navGraph) as NavHostFragment
-           navController = navHostFragment.navController
+           _navController = navHostFragment.navController
 
-           appBarConfiguration = AppBarConfiguration(topLevelDestinationIds = setOf(id.labelsPrintingFragment), drawerLayout ) // include your drawer_layout
+           _appBarConfiguration = AppBarConfiguration(topLevelDestinationIds = setOf(id.labelsPrintingFragment), drawerLayout ) // include your drawer_layout
            drawNavigationView.setupWithNavController(navController)
 
            drawNavigationView.setNavigationItemSelectedListener { item ->
@@ -158,7 +160,11 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
                    }
                    id.connectPrinter ->{
                        drawerLayout.closeDrawer(GravityCompat.START)
-                       showBluetoothDeviceChooseDialog()
+                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                           checkPermissions()
+                       }
+                       inflateConfigPrinterDialogWithPermissionCheck()
+//                       showBluetoothDeviceChooseDialog()
                    }
 
 
@@ -181,7 +187,9 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
                 val remainingTextView = drawNavigationView.getHeaderView(0).findViewById<TextView>(R.id.remain_time)
                 activityViewModel.remainingTime.observe(this@OneSingleActivity) {
                     if (it == "00:00:00") {
-                        remainingTextView.setTextColor(ContextCompat.getColor(this@OneSingleActivity, R.color.TemplateRed))
+                        remainingTextView.setTextColor(ContextCompat.getColor(this@OneSingleActivity,
+                            R.color.TemplateRed
+                        ))
                         inflateLogOutDialog(null)
                     }
                     remainingTextView.text = it
@@ -212,6 +220,70 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
     }
 
 
+    // Mark -*- handle Permissions
+    // NeedsPermission method is called when the user has not granted the permission to the app.
+    @NeedsPermission(Manifest.permission.BLUETOOTH , Manifest.permission.ACCESS_FINE_LOCATION)
+    fun inflateConfigPrinterDialog(){
+        val dialog = DialogConfigPrinterFragment()
+        dialog.show(supportFragmentManager ,dialog.tag )
+    }
+
+    @OnShowRationale(Manifest.permission.BLUETOOTH , Manifest.permission.ACCESS_FINE_LOCATION)
+    fun onRationaleAskBlueToothPermission(request: PermissionRequest) {
+        // Show the rationale
+        MaterialAlertDialogBuilder(dataBinder.root.context)
+            .setTitle("إذن الصلاحيات")
+            .setMessage("إذن تصريح الوصول إلى البلوتوث.")
+            .setPositiveButton("موافق") { dialog, _ ->
+                request.proceed()
+                dialog.dismiss()
+            }
+            .setNegativeButton("إلغاء") { dialog, _ ->
+                // Do nothing
+                request.cancel()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    // OnPermissionDenied method is called if the user has denied the permission
+    @OnPermissionDenied(Manifest.permission.BLUETOOTH , Manifest.permission.ACCESS_FINE_LOCATION)
+    fun onDeniedAskBluetoothPermission() {
+        // Do nothing
+        Toast.makeText(dataBinder.root.context, "إذن تصريح الوصول إلى البلوتوث مرفوض.", Toast.LENGTH_SHORT).show()
+    }
+
+    // OnNeverAskAgain method is called if the user has denied the permission and checked "Never ask again"
+    @OnNeverAskAgain(Manifest.permission.BLUETOOTH , Manifest.permission.ACCESS_FINE_LOCATION)
+    fun onNeverAskAgainAskBluetoothPermission() {
+        // Do nothing
+        kuInfoLog("TestPermission","onNeverAskAgainAskBluetoothPermission")
+        val onApplicationSettings = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        onApplicationSettings.data = Uri.parse("package:${packageName}")
+        applicationSettingsScreen.launch(onApplicationSettings)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // NOTE: delegate the permission handling to generated function
+        onRequestPermissionsResult(requestCode, grantResults)
+
+    }
+
+    private val applicationSettingsScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == Activity.RESULT_OK) {
+            inflateConfigPrinterDialog()
+        }
+
+    }
+
+
+
+
+    // Mark -*- handle Permissions
+    // NeedsPermission method is called when the user has not granted the permission to the app.
+
+
     /************* showConnectDialog ****************/
     @SuppressLint("MissingPermission")
     fun showBluetoothDeviceChooseDialog() {
@@ -234,7 +306,7 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
         bluetoothDeviceChooseDialog.show(supportFragmentManager, null)
     }
 
-    private fun isConfigPrintEnable(configObj: Any) {
+    fun isConfigPrintEnable(configObj: Any) {
         printEnable = isInConnectList(configObj)
     }
 
@@ -253,7 +325,7 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
     }
 
     /************* connectBluetooth ****************/
-    private fun connectBluetooth(bluetoothEdrConfigBean: BluetoothEdrConfigBean) {
+    fun connectBluetooth(bluetoothEdrConfigBean: BluetoothEdrConfigBean) {
 
         val piFactory: PIFactory = BluetoothFactory()
         val printerInterface = piFactory.create()
@@ -410,7 +482,6 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
             }
         }
     }
-
 
 
 }

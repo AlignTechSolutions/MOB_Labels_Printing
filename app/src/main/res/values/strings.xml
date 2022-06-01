@@ -91,5 +91,24 @@
     <string name="disconnect">Disconnect</string>
     <string name="connect">Connect</string>
     <string name="please_connect">Click to connect a device</string>
+    <string name="hide">Hide</string>
+    <string name="show">Show</string>
+    <string name="config_print_title">إعدادت الطباعة</string>
+    <string name="p_name">اسم الطباعة الحالية : %s</string>
+    <string name="p_date">تاريخ اتصال الطباعة الحالية : %s</string>
+    <string name="p_m">ملي</string>
+    <string name="p_cm">سنتي</string>
+    <string name="p_height">الطول</string>
+    <string name="p_width">العرض</string>
+    <string name="p_vertical">رأسي</string>
+    <string name="p_horizontal">أفقي</string>
+    <string name="p_shape_settings">إعداد الشكل</string>
+    <string name="p_measuring_settings">إعداد المقاس</string>
+    <string name="p_choose_print">اختيار الطباعة</string>
+    <string name="p_barcode_settings">إعداد نوع الباركود</string>
+    <string name="p_choose_barcode">اختار نوع الباركود</string>
+    <string name="p_count_of_print">عدد مرات الطباعة</string>
+    <string name="p_save_settings_print">حفظ إعدادت الطباعة</string>
+    <string name="print">Print</string>
 
 </resources>
