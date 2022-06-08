@@ -19,6 +19,7 @@ import com.alignTech.labelsPrinting.ui.dialog.configPrint.adapter.NameBarcodeFor
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BluetoothUtils
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity
 import com.google.zxing.BarcodeFormat
+import com.rt.printerlibrary.enumerate.BarcodeType
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
@@ -45,7 +46,6 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
         newPrintConfig = PrintConfig()
         setSearchNameBarcode(fetchBarcodeFormat())
 
-        (activity as OneSingleActivity).bluetoothUtils.setActivity(activity as OneSingleActivity)
         (activity as OneSingleActivity).bluetoothUtils.setOnBluetoothUtilsListener(this@DialogConfigPrinterFragment)
 
 
@@ -80,8 +80,9 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
                     else rvHorizontal.apply { isActivated = true ; isChecked = true }
                 }
                 config.unitType.let {
-                    if (it == TypedValue.COMPLEX_UNIT_IN) rbPMeasurementCm.apply { isActivated = true ; isChecked = true }
-                    else rbPMeasurementM.apply { isActivated = true ; isChecked = true }
+                    if (it == TypedValue.COMPLEX_UNIT_MM) rbPMeasurementMM.apply { isActivated = true ; isChecked = true }
+                    if (it == TypedValue.COMPLEX_UNIT_IN) rbPMeasurementIN.apply { isActivated = true ; isChecked = true }
+                    else rbPMeasurementCm.apply { isActivated = true ; isChecked = true }
                 }
                 config.height.let { heightEt.setText(it.toString()) }
                 config.width.let { widthEt.setText(it.toString()) }
@@ -100,30 +101,54 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
         dismiss()
     }
 
+    private fun returnUnitType(): Int {
+       dataBinder.apply {
+           return when {
+               rbPMeasurementCm.isChecked -> TypedValue.COMPLEX_UNIT_SHIFT
+               rbPMeasurementMM.isChecked -> TypedValue.COMPLEX_UNIT_MM
+               else -> TypedValue.COMPLEX_UNIT_IN
+           }
+       }
+    }
+
     @SuppressLint("MissingPermission")
     fun saveConfig() {
         dataBinder.apply {
-            newPrintConfig?.also {
-                it.isVertical = rvVertical.isChecked
-                it.unitType = if(!rbPMeasurementCm.isChecked) TypedValue.COMPLEX_UNIT_MM else TypedValue.COMPLEX_UNIT_IN
-                it.height = heightEt.text.toString().toFloatOrNull()?:(if(rbPMeasurementCm.isChecked) 6.6145833333F else 66.145833333F)
-                it.width = widthEt.text.toString().toFloatOrNull()?:(if(rbPMeasurementCm.isChecked) 15.875F else 158.75F)
-                it.countPrint = countPrintEt.text.toString().toIntOrNull()?:1
-                it.barcodeFormatConfig = barcodeFormatConfig
-                it.connectDate = Date()
-                it.connectDate.also { connectDate ->
-                    if (connectDate == null){
-                        it.connectDate = Date()
-                    }
+            when {
+                heightEt.text.toString().toFloatOrNull() == null -> {
+                    heightContainer.error = getString(R.string.required)
+                    return
                 }
-                it.namePrinter.also { namePrinter ->
-                    if (namePrinter == null){
-                        it.namePrinter = bluetoothDevice?.macAddressPrinter
-                    }
+                widthEt.text.toString().toFloatOrNull() == null -> {
+                    widthContainer.error = getString(R.string.required)
+                    return
                 }
-                it.macAddressPrinter.also { macAddressPrinter ->
-                    if (macAddressPrinter == null){
-                        it.macAddressPrinter = bluetoothDevice?.macAddressPrinter
+                barcodeFormatConfig == null -> {
+                    tvSearchNamePrint.error = getString(R.string.required)
+                    return
+                }
+                else -> newPrintConfig?.also {
+                    it.isVertical = rvVertical.isChecked
+                    it.unitType = returnUnitType()
+                    it.height = heightEt.text.toString().toFloat()
+                    it.width = widthEt.text.toString().toFloat()
+                    it.countPrint = countPrintEt.text.toString().toIntOrNull() ?: 1
+                    it.barcodeFormatConfig = barcodeFormatConfig
+                    it.connectDate = Date()
+                    it.connectDate.also { connectDate ->
+                        if (connectDate == null) {
+                            it.connectDate = Date()
+                        }
+                    }
+                    it.namePrinter.also { namePrinter ->
+                        if (namePrinter == null) {
+                            it.namePrinter = bluetoothDevice?.macAddressPrinter
+                        }
+                    }
+                    it.macAddressPrinter.also { macAddressPrinter ->
+                        if (macAddressPrinter == null) {
+                            it.macAddressPrinter = bluetoothDevice?.macAddressPrinter
+                        }
                     }
                 }
             }
@@ -290,13 +315,15 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
     // handle bluetooth config
 
     private fun fetchBarcodeFormat():ArrayList<BarcodeFormatConfig> {
+        val stringZxingFormat = arrayListOf(
+            "CODABAR","CODE_39","CODE_93","CODE_128","ITF","QR_CODE","UPC_A","UPC_E","EAN_8", "EAN_13" , "AZTEC","DATA_MATRIX" , "PDF_417")
+
         val stringFormat = arrayListOf(
-            "AZTEC","CODABAR","CODE_39","CODE_93","CODE_128","DATA_MATRIX","EAN_8",
-            "EAN_13","ITF","PDF_417","QR_CODE","UPC_A","UPC_E")
+            "CODABAR","CODE39","CODE93","CODE128","ITF" ,"QR_CODE","UPC_A","UPC_E","EAN8", "EAN13", "EAN14" , "GS1")
 
         val list = arrayListOf<BarcodeFormatConfig>()
-        stringFormat.forEachIndexed { index, format ->
-            list.add(BarcodeFormatConfig(barcodeFormatId = index, barcodeFormatName = format ,barcodeType = BarcodeFormat.valueOf(format)))
+        stringZxingFormat.forEachIndexed { index, format ->
+            list.add(BarcodeFormatConfig(barcodeFormatId = index, barcodeFormatName = format ,zxingBarcodeType = BarcodeFormat.valueOf(format) , BarcodeType.valueOf("CODABAR")))
         }
          return list
 
@@ -332,6 +359,7 @@ data class CustomBluetoothDevice(
 data class BarcodeFormatConfig(
     var barcodeFormatId: Int? = null,
     var barcodeFormatName: String? = null,
-    var barcodeType: BarcodeFormat? = null
+    var zxingBarcodeType: BarcodeFormat? = null,
+    var printerLibraryBarcodeType: BarcodeType? = null
 )
 

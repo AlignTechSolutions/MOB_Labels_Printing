@@ -29,6 +29,7 @@
                 layout="@layout/base_tool_bar" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_marginHorizontal="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,6 +101,10 @@
 
             </LinearLayout>
 
+
+            <include
+                android:id="@+id/template"
+                layout="@layout/activity_templates" />
 
 
             <com.google.android.material.card.MaterialCardView

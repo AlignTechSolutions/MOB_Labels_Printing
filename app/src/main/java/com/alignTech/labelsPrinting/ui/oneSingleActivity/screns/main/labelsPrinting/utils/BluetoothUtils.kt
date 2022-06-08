@@ -12,13 +12,13 @@ import com.alfayedoficial.kotlinutils.KUPreferences
 import com.alfayedoficial.kotlinutils.kuToast
 import com.alignTech.labelsPrinting.R
 import com.alignTech.labelsPrinting.core.base.view.BaseActivity
+import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
 import com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view.BluetoothDeviceChooseDialog
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
+import com.rt.printerlibrary.bean.Position
 import com.rt.printerlibrary.cmd.EscFactory
 import com.rt.printerlibrary.connect.PrinterInterface
-import com.rt.printerlibrary.enumerate.BmpPrintMode
-import com.rt.printerlibrary.enumerate.CommonEnum
-import com.rt.printerlibrary.enumerate.ConnectStateEnum
+import com.rt.printerlibrary.enumerate.*
 import com.rt.printerlibrary.exception.SdkException
 import com.rt.printerlibrary.factory.connect.BluetoothFactory
 import com.rt.printerlibrary.factory.connect.PIFactory
@@ -27,8 +27,10 @@ import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory
 import com.rt.printerlibrary.observer.PrinterObserver
 import com.rt.printerlibrary.observer.PrinterObserverManager
 import com.rt.printerlibrary.printer.RTPrinter
+import com.rt.printerlibrary.setting.BarcodeSetting
 import com.rt.printerlibrary.setting.BitmapSetting
 import com.rt.printerlibrary.setting.CommonSetting
+import com.rt.printerlibrary.setting.TextSetting
 import com.rt.printerlibrary.utils.PrintStatusCmd
 import com.rt.printerlibrary.utils.PrinterStatusPareseUtils
 import kotlinx.coroutines.MainScope
@@ -165,7 +167,7 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
                    tvDeviceSelected = printerInterface.configObject.toString()
                    onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelected!!)
                    tvDeviceSelectedTag = BaseEnum.HAS_DEVICE
-                   onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelectedTag!!)
+                   onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelectedTag)
                    curPrinterInterface = printerInterface //设置为当前连接， set current Printer Interface
                    printerInterfaceArrayList.add(printerInterface) //多连接-添加到已连接列表
                    rtPrinterKotlin!!.setPrinterInterface(printerInterface)
@@ -182,7 +184,7 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
                    tvDeviceSelected = mActivity!!.getString(R.string.tip_have_no_found_bluetooth_device)
                    onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelected!!)
                    tvDeviceSelectedTag= BaseEnum.NO_DEVICE
-                   onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelectedTag!!)
+                   onBluetoothUtilsListener?.onBluetoothUtilsListener(tvDeviceSelectedTag)
                    curPrinterInterface = null
                    printerInterfaceArrayList.remove(printerInterface) //多连接-从已连接列表中移除
                    //  BaseApplication.getInstance().setRtPrinter(null);
@@ -258,21 +260,95 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
 
             val bitmapSetting = BitmapSetting()
             bitmapSetting.bmpPrintMode = BmpPrintMode.MODE_SINGLE_COLOR
-            bitmapSetting.bimtapLimitWidth = mBitmap.width
+//            bitmapSetting.bimtapLimitWidth = mBitmap.width
+
 
             try {
                 cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap)) // bitmap
             } catch (e: SdkException) {
                 e.printStackTrace()
+                return@launch
             } catch (e: Exception) {
                 e.printStackTrace()
+                return@launch
             }
             cmd.append(cmd.lfcrCmd)
-            //cmd.append(cmd.lfcrCmd)
-            //cmd.append(cmd.lfcrCmd)
-            //cmd.append(cmd.lfcrCmd)
-            //cmd.append(cmd.lfcrCmd)
-            //cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+
+            try {
+                if (rtPrinterKotlin != null|| cmd.appendCmds != null  || cmd.appendCmds.isNotEmpty()) {
+                    rtPrinterKotlin!!.writeMsg(cmd.appendCmds) //Sync Write
+                    result(ResultOfPrint(true, "تمت الطباعة"))
+                }else{
+                    result(ResultOfPrint(false, "تمت الطباعة , لا يوجد بيانات للطباعة او الطباعة غير متصلة"))
+                }
+            } catch (e: SdkException) {
+                e.printStackTrace()
+                result(ResultOfPrint(false, "تمت الطباعة , لا يوجد بيانات للطباعة او الطباعة غير متصلة"))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                result(ResultOfPrint(false, "لم تتم- الطباعة , لا يوجد بيانات للطباعة او الطباعة غير متصلة"))
+            }
+
+        }
+    }
+
+    /************* printEscCommand ****************/
+    fun printEscCommand(barcodeContent : String, barcodeType: BarcodeType? = null, label: LabelsPrinting, result : (ResultOfPrint) -> Unit) {
+        MainScope().launch {
+            val cmd = EscFactory().create()
+            cmd.append(cmd.headerCmd) // header
+
+            cmd.chartsetName = "UTF-8"
+
+            val barcodeSetting = BarcodeSetting()
+            barcodeSetting.barcodeStringPosition = BarcodeStringPosition.BELOW_BARCODE
+            barcodeSetting.heightInDot = 72 //accept value:1~255
+            barcodeSetting.barcodeWidth = 3 //accept value:2~6
+            barcodeSetting.qrcodeDotSize = 5 //accept value: Esc(1~15), Tsc(1~10)
+            barcodeSetting.escBarcodFont = ESCBarcodeFontTypeEnum.BARFONT_B_9x17
+
+            val textSetting = TextSetting()
+            textSetting.apply {
+                escFontType = ESCFontTypeEnum.FONT_A_12x24
+                isEscSmallCharactor = SettingEnum.Enable
+                isAntiWhite = SettingEnum.Disable
+                doubleWidth = SettingEnum.Enable
+                doubleHeight = SettingEnum.Enable
+                bold = SettingEnum.Enable
+                underline = SettingEnum.Disable
+                align = CommonEnum.ALIGN_MIDDLE
+            }
+            val commonSetting = CommonSetting()
+            textSetting.txtPrintPosition = Position(0, 0)
+
+            commonSetting.escLineSpacing = 1
+            cmd.append(cmd.getCommonSettingCmd(commonSetting))
+
+            try {
+//                cmd.append(cmd.getBarcodeCmd(barcodeType, barcodeSetting , barcodeContent)) // barcodeContent
+                cmd.append(cmd.getBarcodeCmd(BarcodeType.CODE93, barcodeSetting , barcodeContent)) // barcodeContent
+
+                cmd.append(cmd.getTextCmd(textSetting , label.nameProduct))
+                cmd.append(cmd.lfcrCmd)
+                cmd.append(cmd.getTextCmd(textSetting , label.price.toString()))
+            } catch (e: SdkException) {
+                e.printStackTrace()
+                return@launch
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@launch
+            }
+            cmd.append(cmd.lfcrCmd)
+            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
 
             try {
                 if (rtPrinterKotlin != null|| cmd.appendCmds != null  || cmd.appendCmds.isNotEmpty()) {
@@ -310,17 +386,22 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
         }
     }
 
-    fun convertCmToPx(cm: Float, metrics: DisplayMetrics): Int {
+    private fun convertCmToPx(cm: Float, metrics: DisplayMetrics): Int {
         return (cm * metrics.xdpi * (1.0f / 2.54f)).toInt()
     }
 
-    fun convertMmToPx(mm: Float, metrics: DisplayMetrics): Int {
+    private fun convertMmToPx(mm: Float, metrics: DisplayMetrics): Int {
         return (mm * metrics.xdpi * (1.0f / 25.4f)).toInt()
+    }
+
+    private fun convertInToPx(inch: Float, metrics: DisplayMetrics):Int{
+        return (inch * metrics.xdpi).toInt()
     }
 
     fun convertToPx(unit: Int, value: Float, metrics: DisplayMetrics):Int{
         return when(unit){
             TypedValue.COMPLEX_UNIT_MM -> convertMmToPx(value, metrics)
+            TypedValue.COMPLEX_UNIT_IN -> convertInToPx(value, metrics)
             else -> convertCmToPx(value, metrics)
         }
     }

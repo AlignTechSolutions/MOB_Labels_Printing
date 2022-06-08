@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="activity"
+            type="com.alignTech.labelsPrinting.ui.template.view.TemplatesActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lyPrint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.template.view.TemplatesActivity">
+
+
+        <com.alignTech.labelsPrinting.ui.template.turboimageview.TurboImageView
+            android:id="@+id/imgBarcode"
+            android:layout_width="match_parent"
+            android:scaleType="fitXY"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_alignParentStart="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:id="@+id/lyTvBarcode"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgBarcode">
+
+            <TextView
+                android:id="@+id/tvBarcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeMaxTextSize="@dimen/_16ssp"
+                android:autoSizeMinTextSize="@dimen/_9ssp"
+                android:autoSizePresetSizes="1dp"
+                android:autoSizeStepGranularity="1dp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:letterSpacing="0.7"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textSize="@dimen/_11ssp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:targetApi="o"
+                tools:text="0000000012121212121212210" />
+
+            <TextView
+                android:id="@+id/tvNameProduct"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeMaxTextSize="@dimen/_16ssp"
+                android:autoSizeMinTextSize="@dimen/_9ssp"
+                android:autoSizePresetSizes="1dp"
+                android:autoSizeStepGranularity="1dp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:letterSpacing="0.2"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvBarcode"
+                tools:targetApi="o"
+                tools:text="Name Product" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvNameProduct">
+
+
+                <TextView
+                    android:id="@+id/tvPriceProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="@dimen/_16ssp"
+                    android:autoSizeMinTextSize="@dimen/_9ssp"
+                    android:autoSizePresetSizes="1dp"
+                    android:autoSizeStepGranularity="1dp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="marquee"
+                    android:gravity="center"
+                    android:letterSpacing="0.2"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold"
+                    tools:targetApi="o"
+                    tools:text="100" />
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:autoSizeMaxTextSize="@dimen/_16ssp"
+                    android:autoSizeMinTextSize="@dimen/_9ssp"
+                    android:autoSizePresetSizes="1dp"
+                    android:autoSizeStepGranularity="1dp"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="marquee"
+                    android:gravity="center"
+                    android:letterSpacing="0.2"
+                    android:singleLine="true"
+                    android:text="Price:"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold"
+                    tools:targetApi="o" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

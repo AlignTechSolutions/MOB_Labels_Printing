@@ -95,6 +95,8 @@ class OneSingleActivity : BaseActivity<ActivityOneSingleBinding>() , DialogCallB
         /* Call database and get all labels */
         activityViewModel.getAllLabelsPrinting()
 
+        bluetoothUtils.setActivity(this)
+
         storageHelper.onFileSelected = { requestCode, files ->
             // do stuff
             val contentResolver = applicationContext.contentResolver

@@ -23,5 +23,7 @@
     <color name="TemplateLightGrey">#F5F5F5</color>
     <color name="TemplateSkyBlue">#4fcef9</color>
     <color name="TemplateGreenFaded">#650EEA7D</color>
+    <color name="pocketpaint_main_drawing_surface_background">#D3D3D3</color>
+    <color name="pocketpaint_main_drawing_surface_active">#00000000</color>
 
 </resources>

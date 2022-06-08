@@ -184,20 +184,29 @@
                             android:orientation="horizontal">
 
                             <RadioButton
-                                android:id="@+id/rbPMeasurementM"
-                                android:layout_width="0dp"
-                                android:textAlignment="viewStart"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="@string/p_m"/>
-
-                            <RadioButton
                                 android:id="@+id/rbPMeasurementCm"
                                 android:layout_width="0dp"
                                 android:textAlignment="viewStart"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:text="@string/p_cm"/>
+
+                            <RadioButton
+                                android:id="@+id/rbPMeasurementIN"
+                                android:layout_width="0dp"
+                                android:textAlignment="viewStart"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_in"/>
+
+                            <RadioButton
+                                android:id="@+id/rbPMeasurementMM"
+                                android:layout_width="0dp"
+                                android:textAlignment="viewStart"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/p_mm"/>
+
 
 
                         </RadioGroup>

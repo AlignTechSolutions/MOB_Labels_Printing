@@ -97,7 +97,7 @@
     <string name="config_print_title">إعدادت الطباعة</string>
     <string name="p_name">اسم الطباعة الحالية : %s</string>
     <string name="p_date">تاريخ اتصال الطباعة الحالية : %s</string>
-    <string name="p_m">ملي</string>
+    <string name="p_mm">ملي</string>
     <string name="p_cm">سنتي</string>
     <string name="p_height">الطول</string>
     <string name="p_width">العرض</string>
@@ -111,6 +111,7 @@
     <string name="p_count_of_print">عدد مرات الطباعة</string>
     <string name="p_save_settings_print">حفظ إعدادت الطباعة</string>
     <string name="print">طباعة</string>
+    <string name="p_in">إنش</string>
 
 
 </resources>

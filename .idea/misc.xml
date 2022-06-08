@@ -36,6 +36,7 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_kotlin_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_one_single.xml" value="0.4030110017371164" />
+        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_templates.xml" value="0.33" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_header_excel.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_recyclerview.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_tool_bar.xml" value="0.3625" />
@@ -65,6 +66,7 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_dashboard.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_report.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_nav_drawer.xml" value="0.3625" />
+        <entry key="..\:/Android_Projects/LabelsPrinting/colorpicker/src/main/res/layout/color_picker_dialog_view.xml" value="0.3625" />
       </map>
     </option>
   </component>
