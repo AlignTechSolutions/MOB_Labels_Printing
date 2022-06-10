@@ -179,33 +179,34 @@
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                             android:id="@+id/unitGroup"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:orientation="horizontal">
 
                             <RadioButton
-                                android:id="@+id/rbPMeasurementCm"
-                                android:layout_width="0dp"
-                                android:textAlignment="viewStart"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="@string/p_cm"/>
+                                 android:id="@+id/rbPMeasurementCm"
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_weight="1"
+                                 android:text="@string/p_cm"
+                                 android:textAlignment="viewStart" />
 
                             <RadioButton
-                                android:id="@+id/rbPMeasurementIN"
-                                android:layout_width="0dp"
-                                android:textAlignment="viewStart"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="@string/p_in"/>
+                                 android:id="@+id/rbPMeasurementIN"
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_weight="1"
+                                 android:text="@string/p_in"
+                                 android:textAlignment="viewStart" />
 
                             <RadioButton
-                                android:id="@+id/rbPMeasurementMM"
-                                android:layout_width="0dp"
-                                android:textAlignment="viewStart"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:text="@string/p_mm"/>
+                                 android:id="@+id/rbPMeasurementMM"
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_weight="1"
+                                 android:text="@string/p_mm"
+                                 android:textAlignment="viewStart" />
 
 
 

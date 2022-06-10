@@ -4,11 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,8 +30,10 @@ import com.alignTech.labelsPrinting.ui.dialog.countPrint.view.DialogCountPrinter
 import com.alignTech.labelsPrinting.ui.dialog.importExcel.view.DialogImportExcelFragment
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.LabelsPrintingTableRvAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.NameProductAutoCompleteAdapter
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateBarcode
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateBarcodeWriter
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateCode39Code
+import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateQRCode
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BitmapUtils.createBitmap
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BluetoothUtils
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.viewModel.LabelsPrintingViewModel
@@ -43,8 +43,6 @@ import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.Companion.rtPrinterKotlin
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.inflateConfigPrinterDialogWithPermissionCheck
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
-import com.alignTech.labelsPrinting.ui.template.turboimageview.MultiTouchObject
-import com.alignTech.labelsPrinting.ui.template.turboimageview.TurboImageViewListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
@@ -65,7 +63,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , DialogCallBack ,
     LabelsPrintingTableRvAdapter.RecyclerviewPosition  , OnDelete ,
-    BluetoothUtils.OnBluetoothUtilsListener , TurboImageViewListener {
+    BluetoothUtils.OnBluetoothUtilsListener  {
 
     private val activityViewModel : OneSingleViewModel by activityViewModels()
     private val mViewModel : LabelsPrintingViewModel by viewModels()
@@ -73,9 +71,6 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     private val adapterLabelsPrintingTableRv by lazy { LabelsPrintingTableRvAdapter() }
     private lateinit var adapterNameProductAutoComplete: NameProductAutoCompleteAdapter
     private var statusInsert = true
-
-    private var label: LabelsPrinting = LabelsPrinting(barCode = "123456789012" , price = 500.00 , nameProduct = "testProject")
-    private val bitmapBarcode by lazy { generateBarcodeWriter(label.barCode!!, 500, 500, BarcodeFormat.valueOf("QR_CODE")) }
 
     @Inject
     lateinit var bluetoothUtils : BluetoothUtils
@@ -138,28 +133,6 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     }
 
     // handle bluetooth config
-
-    fun template(label: LabelsPrinting ,bitmapBarcode : Bitmap ): Bitmap {
-        dataBinder.template.apply {
-            imgBarcode.setListener(this@LabelsPrintingFragment)
-            imgBarcode.addObject(requireContext() , bitmapBarcode)
-            imgBarcode.objectSelectedBorderColor = Color.BLACK
-            tvBarcode.text = label.barCode.toString()
-            tvPriceProduct.text = label.price.toString()
-            tvNameProduct.text = label.nameProduct.toString()
-            MainScope().launch {
-                delay(1000)
-                imgBarcode.addObject(requireContext(),  dataBinder.template.lyTvBarcode.kuScreenshot())
-                tvBarcode.kuHide()
-                tvPriceProduct.kuHide()
-                tvNameProduct.kuHide()
-                tvPrice.kuHide()
-            }
-
-            return imgBarcode.kuScreenshot()
-        }
-
-    }
 
     private val applicationSettingsScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode == Activity.RESULT_OK) {
@@ -579,29 +552,41 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
             val width = bluetoothUtils.convertToPx(config.unitType , config.width , resources.displayMetrics)
             val height = bluetoothUtils.convertToPx(config.unitType , config.height , resources.displayMetrics)
 
-            var bitmap = generateBarcodeWriter(  "123456789012" , width, height,config.barcodeFormatConfig!!.zxingBarcodeType!!)
-            bitmap = bitmap?.createBitmap(label , config.isVertical!!)
-            dataBinder.mgBarCode.setImageBitmap(bitmap)
+            var bitmap = generateBarcode(  label.barCode!! , config.barcodeFormatConfig!!.zxingBarcodeType!!)
+
+            try {
+                bitmap = bitmap?.createBitmap(label , config.isVertical!!)
+            }catch (e:Exception){
+                snackBarError(e.message.toString() , R.color.TemplateRed, R.color.white)
+                return
+            }
+
             if (bitmap == null) {
                 snackBarError("يوجد مشكله فى الباركود" , R.color.TemplateRed, R.color.white)
                 return
             }
 
-            bluetoothUtils.printEscCommand( template(label , bitmapBarcode!!)){
+            val resized: Bitmap?
+            try {
+                resized = Bitmap.createScaledBitmap(bitmap, (width* 0.1).toInt(), (height* 0.1).toInt(), true)
+            }catch (e:Exception){
+                snackBarError(e.message.toString() , R.color.TemplateRed, R.color.white)
+                return
+            }
+            dataBinder.mgBarCode.apply {
+                setImageBitmap(resized)
+                kuShow()
+            }
+
+            bluetoothUtils.printEscCommand( resized){
                 if (it.result){
                     snackBarError(it.msg , R.color.TemplateGreen, R.color.white)
                 }else{
                     snackBarError(it.msg , R.color.TemplateRed, R.color.white)
                 }
+                dataBinder.mgBarCode.kuHide()
             }
 
-//            bluetoothUtils.printEscCommand("123456789012" , config.barcodeFormatConfig!!.printerLibraryBarcodeType!! ,label ){
-//                if (it.result){
-//                    snackBarError(it.msg , R.color.TemplateGreen, R.color.white)
-//                }else{
-//                    snackBarError(it.msg , R.color.TemplateRed, R.color.white)
-//                }
-//            }
         }catch (e:Exception){
             snackBarError("حدث خطأ ما فى الطباعة, الرجاء اتباع تعليمات الطباعة السليمه52" , R.color.TemplateRed, R.color.white)
         }
@@ -627,23 +612,6 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         dataBinder.apply {
             if (visibility) pbConnect.kuShow() else pbConnect.kuHide()
         }
-    }
-
-    companion object{
-        const val TAG = "TAG_TurboImage"
-    }
-
-    override fun onImageObjectSelected(multiTouchObject: MultiTouchObject?) {
-        Log.d(TAG, "image object selected , $multiTouchObject");
-    }
-
-    override fun onImageObjectDropped() {
-        Log.d(TAG, "image object dropped");
-    }
-
-    override fun onCanvasTouched() {
-        dataBinder.template.imgBarcode.deselectAll();
-        Log.d(TAG, "canvas touched");
     }
 
 

@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/drawable/ic_close.xml" value="0.197" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/drawable/ic_log_out.xml" value="0.154" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/activity_one_single.xml" value="0.2160367722165475" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/activity_templates.xml" value="0.2203125" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/base_barcode.xml" value="0.2203125" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/fragment_dialog_config_printer.xml" value="0.4" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/fragment_labels_printing.xml" value="0.2203125" />
+        <entry key="..\:/AlginTech/labelsPrainting/code/app/src/main/res/layout/nav_header_main.xml" value="0.2203125" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/drawable/bg_app.xml" value="0.2525" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/drawable/bluetooth_device_selected_background.xml" value="0.2525" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/drawable/column_header_rectangle.xml" value="0.2525" />
@@ -36,7 +44,6 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_kotlin_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_one_single.xml" value="0.4030110017371164" />
-        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/activity_templates.xml" value="0.33" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_header_excel.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_recyclerview.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_tool_bar.xml" value="0.3625" />
@@ -44,12 +51,9 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/dialog_choose_bluetooth_device.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_add_new_row_to_db_dialog.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_auth.xml" value="0.3625" />
-        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_config_print.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_add_new_row_to_db.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_add_new_to_db.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_bluetooth_device_choose.xml" value="0.1824712643678161" />
-        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_config_printer.xml" value="0.3625" />
-        <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_count_printer.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_import_excel.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_kotlin_main.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_loading.xml" value="0.3625" />
@@ -66,7 +70,6 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_dashboard.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_report.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_nav_drawer.xml" value="0.3625" />
-        <entry key="..\:/Android_Projects/LabelsPrinting/colorpicker/src/main/res/layout/color_picker_dialog_view.xml" value="0.3625" />
       </map>
     </option>
   </component>

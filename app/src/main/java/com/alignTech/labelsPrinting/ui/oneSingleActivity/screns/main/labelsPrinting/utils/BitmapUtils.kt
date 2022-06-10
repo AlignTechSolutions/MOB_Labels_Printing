@@ -7,8 +7,8 @@ import com.alignTech.labelsPrinting.local.model.labelsPrinting.LabelsPrinting
 object BitmapUtils {
 
 
-    fun Bitmap.createBitmap(label: LabelsPrinting, vertical: Boolean = false):Bitmap{
-        var bitmap = Bitmap.createBitmap(width, height+190, Bitmap.Config.ARGB_8888)
+    fun Bitmap.createBitmap(label: LabelsPrinting, vertical: Boolean = false):Bitmap? = try{
+        var bitmap = Bitmap.createBitmap(550, height+190, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
         val paint = Paint()
@@ -24,22 +24,21 @@ object BitmapUtils {
 
         paint.color = Color.BLACK
         paint.isAntiAlias = true
-        kuInfoLog("jjjjjjjjjjjjj" , "width ==${width}")
-        kuInfoLog("jjjjjjjjjjjjj" , "height ==${height}")
-        kuInfoLog("jjjjjjjjjjjjj" , "height ==${height+190}")
-        paint.textSize = height.toFloat()
-        kuInfoLog("jjjjjjjjjjjjj" , "textSize ==${paint.textSize}")
+        paint.textSize = 24f
 
         paint.textAlign = Paint.Align.CENTER
         paint.typeface = Typeface.create("Arial", Typeface.BOLD)
-        label.barCode?.let { canvas.drawText(it, width / 2f, height+16f, paint) }
-        label.nameProduct?.let { canvas.drawText(it, width / 2f, height+30f, paint) }
-        label.price?.let { canvas.drawText(it.toString(), width / 2f, height+55f, paint) }
+        paint.letterSpacing = 0.7f
+        label.barCode?.let { canvas.drawText(it, canvas.width / 2f, (this.height+20).toFloat(), paint) }
+        paint.letterSpacing = 0f
+        label.nameProduct?.let { canvas.drawText(it,canvas.width / 2f, (this.height+45f), paint) }
+        label.price?.let { canvas.drawText("السعر : $it", canvas.width / 2f, (this.height+50f)+20f, paint) }
         print(bitmap)
 
-       if (vertical) bitmap = bitmap.rotateBitmap(90f)
-
-        return bitmap
+        if (vertical) bitmap = bitmap.rotateBitmap(90f)
+        bitmap
+    }catch (e:Exception){
+        null
     }
 
     fun Bitmap.rotateBitmap( angle: Float): Bitmap? {

@@ -37,6 +37,7 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
 
     private var barcodeFormatConfig : BarcodeFormatConfig? = null
     private var newPrintConfig : PrintConfig? = null
+    private var unitType : Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +63,8 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
             fragment = this@DialogConfigPrinterFragment
             lifecycleOwner = this@DialogConfigPrinterFragment
 
+            selectUnitType()
+
             printConfig?.let { config ->
                 newPrintConfig = config
                 if ((activity as OneSingleActivity).bluetoothUtils.isBluetoothConnected()){
@@ -80,9 +83,9 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
                     else rvHorizontal.apply { isActivated = true ; isChecked = true }
                 }
                 config.unitType.let {
-                    if (it == TypedValue.COMPLEX_UNIT_MM) rbPMeasurementMM.apply { isActivated = true ; isChecked = true }
-                    if (it == TypedValue.COMPLEX_UNIT_IN) rbPMeasurementIN.apply { isActivated = true ; isChecked = true }
-                    else rbPMeasurementCm.apply { isActivated = true ; isChecked = true }
+                    if (it == 3) rbPMeasurementMM.apply { isActivated = true ; isChecked = true }
+                    if (it == 2) rbPMeasurementIN.apply { isActivated = true ; isChecked = true }
+                    if (it == 1) rbPMeasurementCm.apply { isActivated = true ; isChecked = true }
                 }
                 config.height.let { heightEt.setText(it.toString()) }
                 config.width.let { widthEt.setText(it.toString()) }
@@ -101,14 +104,20 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
         dismiss()
     }
 
-    private fun returnUnitType(): Int {
-       dataBinder.apply {
-           return when {
-               rbPMeasurementCm.isChecked -> TypedValue.COMPLEX_UNIT_SHIFT
-               rbPMeasurementMM.isChecked -> TypedValue.COMPLEX_UNIT_MM
-               else -> TypedValue.COMPLEX_UNIT_IN
-           }
-       }
+    private fun selectUnitType(){
+      dataBinder.unitGroup.setOnCheckedChangeListener { group, checkedId ->
+          when(checkedId){
+              R.id.rbPMeasurementMM ->{
+                  unitType = 3
+              }
+              R.id.rbPMeasurementIN ->{
+                  unitType = 2
+              }
+              R.id.rbPMeasurementCm->{
+                  unitType = 1
+              }
+          }
+      }
     }
 
     @SuppressLint("MissingPermission")
@@ -129,7 +138,7 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
                 }
                 else -> newPrintConfig?.also {
                     it.isVertical = rvVertical.isChecked
-                    it.unitType = returnUnitType()
+                    it.unitType = unitType
                     it.height = heightEt.text.toString().toFloat()
                     it.width = widthEt.text.toString().toFloat()
                     it.countPrint = countPrintEt.text.toString().toIntOrNull() ?: 1
@@ -220,7 +229,7 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
             },{tag ->
                 tvPName.tag = tag
             },{ enable->
-                btnConnect.isEnabled = !enable
+                //btnConnect.isEnabled = !enable
                 btnDisConnect.isEnabled = enable
             })
         }
@@ -241,7 +250,7 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
                     lyConnection.kuShow()
                     tvPName.kuShow()
                 },{ enable->
-                    btnConnect.isEnabled = !enable
+                    //btnConnect.isEnabled = !enable
                     btnDisConnect.isEnabled = enable
                 })
         }
@@ -271,8 +280,8 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
                 ,{tag ->
                 tvPName.tag = tag
             },{ enable->
-                btnConnect.isEnabled = !enable
-                btnDisConnect.isEnabled = enable
+                //btnConnect.isEnabled = enable
+                btnDisConnect.isEnabled = !enable
             })
         }
 
@@ -300,7 +309,7 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
 
     override fun onBluetoothUtilsListener(enable: Boolean) {
         dataBinder.apply {
-            btnConnect.isEnabled = !enable
+            //btnConnect.isEnabled = !enable
             btnDisConnect.isEnabled = enable
         }
     }
@@ -318,12 +327,9 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
         val stringZxingFormat = arrayListOf(
             "CODABAR","CODE_39","CODE_93","CODE_128","ITF","QR_CODE","UPC_A","UPC_E","EAN_8", "EAN_13" , "AZTEC","DATA_MATRIX" , "PDF_417")
 
-        val stringFormat = arrayListOf(
-            "CODABAR","CODE39","CODE93","CODE128","ITF" ,"QR_CODE","UPC_A","UPC_E","EAN8", "EAN13", "EAN14" , "GS1")
-
         val list = arrayListOf<BarcodeFormatConfig>()
         stringZxingFormat.forEachIndexed { index, format ->
-            list.add(BarcodeFormatConfig(barcodeFormatId = index, barcodeFormatName = format ,zxingBarcodeType = BarcodeFormat.valueOf(format) , BarcodeType.valueOf("CODABAR")))
+            list.add(BarcodeFormatConfig(barcodeFormatId = index, barcodeFormatName = format ,zxingBarcodeType = BarcodeFormat.valueOf(format)))
         }
          return list
 

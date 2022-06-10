@@ -256,11 +256,11 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
             val cmd = EscFactory().create()
             cmd.append(cmd.headerCmd) // header
             val commonSetting = CommonSetting()
-            //  commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+            commonSetting.align = CommonEnum.ALIGN_MIDDLE;
 
             val bitmapSetting = BitmapSetting()
             bitmapSetting.bmpPrintMode = BmpPrintMode.MODE_SINGLE_COLOR
-//            bitmapSetting.bimtapLimitWidth = mBitmap.width
+            bitmapSetting.bimtapLimitWidth = mBitmap.width
 
 
             try {
@@ -272,11 +272,11 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
                 e.printStackTrace()
                 return@launch
             }
-            cmd.append(cmd.lfcrCmd)
-            cmd.append(cmd.lfcrCmd)
-            cmd.append(cmd.lfcrCmd)
-            cmd.append(cmd.lfcrCmd)
-            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
+//            cmd.append(cmd.lfcrCmd)
             cmd.append(cmd.lfcrCmd)
 
             try {
@@ -400,8 +400,8 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
 
     fun convertToPx(unit: Int, value: Float, metrics: DisplayMetrics):Int{
         return when(unit){
-            TypedValue.COMPLEX_UNIT_MM -> convertMmToPx(value, metrics)
-            TypedValue.COMPLEX_UNIT_IN -> convertInToPx(value, metrics)
+            3 -> convertMmToPx(value, metrics)
+            2 -> convertInToPx(value, metrics)
             else -> convertCmToPx(value, metrics)
         }
     }
