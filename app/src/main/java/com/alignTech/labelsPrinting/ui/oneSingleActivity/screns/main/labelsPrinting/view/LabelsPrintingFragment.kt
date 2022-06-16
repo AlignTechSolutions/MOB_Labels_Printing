@@ -578,7 +578,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 kuShow()
             }
 
-            bluetoothUtils.printEscCommand( resized){
+            bluetoothUtils.printEscCommand( resized , config.isVertical){
                 if (it.result){
                     snackBarError(it.msg , R.color.TemplateGreen, R.color.white)
                 }else{

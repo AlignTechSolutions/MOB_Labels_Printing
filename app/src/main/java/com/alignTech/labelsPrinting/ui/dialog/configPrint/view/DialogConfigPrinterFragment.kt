@@ -65,6 +65,9 @@ class DialogConfigPrinterFragment : BaseDialogFragment<FragmentDialogConfigPrint
 
             selectUnitType()
 
+            rbPMeasurementMM.isChecked = true
+
+
             printConfig?.let { config ->
                 newPrintConfig = config
                 if ((activity as OneSingleActivity).bluetoothUtils.isBluetoothConnected()){

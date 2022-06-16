@@ -190,6 +190,7 @@
                                  android:layout_height="wrap_content"
                                  android:layout_weight="1"
                                  android:text="@string/p_cm"
+                                android:visibility="gone"
                                  android:textAlignment="viewStart" />
 
                             <RadioButton
@@ -198,6 +199,7 @@
                                  android:layout_height="wrap_content"
                                  android:layout_weight="1"
                                  android:text="@string/p_in"
+                                android:visibility="gone"
                                  android:textAlignment="viewStart" />
 
                             <RadioButton
@@ -223,7 +225,7 @@
                                 android:layout_height="0dp"
                                 style="@style/loginTextInputLayout"
                                 android:textAlignment="viewStart"
-                                app:helperText="ملي / سنتى"
+                                app:helperText="ملي"
                                 android:hint="@string/p_height">
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -250,7 +252,7 @@
                                 android:layout_marginStart="@dimen/_5sdp"
                                 android:layout_height="0dp"
                                 android:textAlignment="viewStart"
-                                app:helperText="ملي / سنتى"
+                                app:helperText="ملي"
                                 android:hint="@string/p_width">
 
                                 <com.google.android.material.textfield.TextInputEditText

@@ -251,7 +251,7 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
     }
 
     /************* printEscCommand ****************/
-    fun printEscCommand(mBitmap : Bitmap , result : (ResultOfPrint) -> Unit) {
+    fun printEscCommand(mBitmap : Bitmap ,vertical: Boolean? = false, result : (ResultOfPrint) -> Unit) {
         MainScope().launch {
             val cmd = EscFactory().create()
             cmd.append(cmd.headerCmd) // header
@@ -272,12 +272,16 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
                 e.printStackTrace()
                 return@launch
             }
-//            cmd.append(cmd.lfcrCmd)
-//            cmd.append(cmd.lfcrCmd)
-//            cmd.append(cmd.lfcrCmd)
-//            cmd.append(cmd.lfcrCmd)
-//            cmd.append(cmd.lfcrCmd)
-            cmd.append(cmd.lfcrCmd)
+
+            if (vertical == true){
+                cmd.append(cmd.lfcrCmd)
+                cmd.append(cmd.lfcrCmd)
+                cmd.append(cmd.lfcrCmd)
+                cmd.append(cmd.lfcrCmd)
+            }else{
+                cmd.append(cmd.lfcrCmd)
+            }
+
 
             try {
                 if (rtPrinterKotlin != null|| cmd.appendCmds != null  || cmd.appendCmds.isNotEmpty()) {
