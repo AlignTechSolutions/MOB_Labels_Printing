@@ -520,7 +520,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
     override fun onResume() {
         super.onResume()
         //TODO back session
-//        (activity as OneSingleActivity).startSessionCounter()
+        (activity as OneSingleActivity).startSessionCounter()
     }
 
     override fun printLabel(label: LabelsPrinting) {
