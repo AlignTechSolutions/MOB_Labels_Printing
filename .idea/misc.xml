@@ -70,6 +70,10 @@
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_dashboard.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_header_report.xml" value="0.3625" />
         <entry key="..\:/Android_Projects/LabelsPrinting/app/src/main/res/menu/menu_nav_drawer.xml" value="0.3625" />
+        <entry key="..\:/Android_projects/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_barcode.xml" value="0.3582427536231884" />
+        <entry key="..\:/Android_projects/Android_Projects/LabelsPrinting/app/src/main/res/layout/base_header_excel.xml" value="0.3484375" />
+        <entry key="..\:/Android_projects/Android_Projects/LabelsPrinting/app/src/main/res/layout/fragment_dialog_config_printer.xml" value="0.3484375" />
+        <entry key="..\:/Android_projects/Android_Projects/LabelsPrinting/app/src/main/res/layout/item_rv_excel.xml" value="0.22850020772746157" />
       </map>
     </option>
   </component>

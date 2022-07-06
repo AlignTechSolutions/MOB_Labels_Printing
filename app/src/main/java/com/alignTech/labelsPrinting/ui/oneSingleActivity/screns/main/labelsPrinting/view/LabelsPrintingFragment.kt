@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
 import android.view.*
 import android.widget.Toast
@@ -31,9 +32,6 @@ import com.alignTech.labelsPrinting.ui.dialog.importExcel.view.DialogImportExcel
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.LabelsPrintingTableRvAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.adapter.NameProductAutoCompleteAdapter
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateBarcode
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateBarcodeWriter
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateCode39Code
-import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BarcodeUtils.generateQRCode
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BitmapUtils.createBitmap
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.utils.BluetoothUtils
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrinting.viewModel.LabelsPrintingViewModel
@@ -44,7 +42,6 @@ import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.OneSingleActivity.
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.view.inflateConfigPrinterDialogWithPermissionCheck
 import com.alignTech.labelsPrinting.ui.oneSingleActivity.viewModel.OneSingleViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.zxing.BarcodeFormat
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean
 import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory
 import com.rt.printerlibrary.printer.RTPrinter
@@ -55,9 +52,11 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import permissions.dispatcher.*
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import javax.inject.Inject
+
 
 @RuntimePermissions
 @AndroidEntryPoint
@@ -325,7 +324,10 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
 
     // Mark -*- handle Permissions
     // NeedsPermission method is called when the user has not granted the permission to the app.
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE,)
+    @NeedsPermission(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
     fun inflateImportBarcodeDialog(){
         val dialog = DialogImportExcelFragment()
         dialog.initDialogCallBack(this)
@@ -547,7 +549,16 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
 
     }
 
+    private fun File.writeBitmap(bitmap: Bitmap, format: Bitmap.CompressFormat, quality: Int) {
+        outputStream().use { out ->
+            bitmap.compress(format, quality, out)
+            out.flush()
+        }
+    }
+
     private fun printLabelOrder(label: LabelsPrinting, config: PrintConfig) {
+
+
         try {
             val width = bluetoothUtils.convertToPx(config.unitType , config.width , resources.displayMetrics)
             val height = bluetoothUtils.convertToPx(config.unitType , config.height , resources.displayMetrics)
@@ -566,19 +577,26 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
                 return
             }
 
-            val resized: Bitmap?
-            try {
-                resized = Bitmap.createScaledBitmap(bitmap, (width* 0.1).toInt(), (height* 0.1).toInt(), true)
-            }catch (e:Exception){
-                snackBarError(e.message.toString() , R.color.TemplateRed, R.color.white)
-                return
-            }
+//            val resized: Bitmap?
+//            try {
+//                resized = Bitmap.createScaledBitmap(bitmap, (width* 0.1).toInt(), (height* 0.1).toInt(), true)
+//            }catch (e:Exception){
+//                snackBarError(e.message.toString() , R.color.TemplateRed, R.color.white)
+//                return
+//            }
+//
+//
+//            val file_path = Environment.getExternalStorageDirectory().toString() + "/" + File.separator
+//            val dir = File(file_path)
+//            File(dir , "barcode2.png").writeBitmap(resized!!, Bitmap.CompressFormat.PNG, 100)
+
+
             dataBinder.mgBarCode.apply {
-                setImageBitmap(resized)
+                setImageBitmap(bitmap)
                 kuShow()
             }
 
-            bluetoothUtils.printEscCommand( resized , config.isVertical){
+            bluetoothUtils.printEscCommand( bitmap , config.isVertical){
                 if (it.result){
                     snackBarError(it.msg , R.color.TemplateGreen, R.color.white)
                 }else{
@@ -588,7 +606,7 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
             }
 
         }catch (e:Exception){
-            snackBarError("حدث خطأ ما فى الطباعة, الرجاء اتباع تعليمات الطباعة السليمه52" , R.color.TemplateRed, R.color.white)
+            snackBarError("حدث خطأ ما فى الطباعة, الرجاء اتباع تعليمات الطباعة السليمه" , R.color.TemplateRed, R.color.white)
         }
 
     }

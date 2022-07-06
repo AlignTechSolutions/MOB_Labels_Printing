@@ -8,7 +8,7 @@ object BitmapUtils {
 
 
     fun Bitmap.createBitmap(label: LabelsPrinting, vertical: Boolean = false):Bitmap? = try{
-        var bitmap = Bitmap.createBitmap(550, height+190, Bitmap.Config.ARGB_8888)
+        var bitmap = Bitmap.createBitmap(width, height+190, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
         val paint = Paint()

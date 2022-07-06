@@ -253,34 +253,49 @@ class BluetoothUtils @Inject constructor(private val appPreferences: KUPreferenc
     /************* printEscCommand ****************/
     fun printEscCommand(mBitmap : Bitmap ,vertical: Boolean? = false, result : (ResultOfPrint) -> Unit) {
         MainScope().launch {
-            val cmd = EscFactory().create()
-            cmd.append(cmd.headerCmd) // header
-            val commonSetting = CommonSetting()
-            commonSetting.align = CommonEnum.ALIGN_MIDDLE;
 
             val bitmapSetting = BitmapSetting()
             bitmapSetting.bmpPrintMode = BmpPrintMode.MODE_SINGLE_COLOR
-            bitmapSetting.bimtapLimitWidth = mBitmap.width
+
+            val cmd = EscFactory().create().apply {
+
+                append(getCpclHeaderCmd(10, 15, 1, 0))
+                append(getPrintCopies(1))
 
 
-            try {
-                cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap)) // bitmap
-            } catch (e: SdkException) {
-                e.printStackTrace()
-                return@launch
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return@launch
+                try {
+                    append(getBitmapCmd(bitmapSetting, mBitmap)) // bitmap
+                } catch (e: SdkException) {
+                    e.printStackTrace()
+                    return@launch
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return@launch
+                }
             }
 
-            if (vertical == true){
-                cmd.append(cmd.lfcrCmd)
-                cmd.append(cmd.lfcrCmd)
-                cmd.append(cmd.lfcrCmd)
-                cmd.append(cmd.lfcrCmd)
-            }else{
-                cmd.append(cmd.lfcrCmd)
-            }
+//            //getCpclHeaderCmd(int pageHigh, int pageWidth, int printCopies, int offset)
+//            cmd.getCpclHeaderCmd(20, 35, 2, 0)
+////            cmd.getPageArea(0 , 0 , 100,100)
+//            cmd.getPrintCopies(2)
+////            cmd.getSetAreaWidth(30)
+
+
+           // bitmapSetting.printPostion = Position(20, 20)
+            //bitmapSetting.bitmapLimitWidth = mBitmap.width
+            // set center
+
+
+
+
+//            if (vertical == true){
+//                cmd.append(cmd.lfcrCmd)
+//                cmd.append(cmd.lfcrCmd)
+//                cmd.append(cmd.lfcrCmd)
+//                cmd.append(cmd.lfcrCmd)
+//            }else{
+//                cmd.append(cmd.lfcrCmd)
+//            }
 
 
             try {

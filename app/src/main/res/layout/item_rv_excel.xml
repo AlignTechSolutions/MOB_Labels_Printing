@@ -58,7 +58,7 @@
         <TextView
             android:id="@+id/tv_bar_code"
             style="@style/textRegularStyle"
-            android:layout_width="100dp"
+            android:layout_width="200dp"
             android:background="@drawable/column_rectangle"
             android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_2sdp"

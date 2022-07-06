@@ -27,7 +27,7 @@
 
         <TextView
             style="@style/textRegularStyle"
-            android:layout_width="100dp"
+            android:layout_width="200dp"
             android:background="@drawable/row_header_rectangle"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_2sdp"
