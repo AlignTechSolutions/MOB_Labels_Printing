@@ -166,50 +166,50 @@
                             android:text="@string/show_conncected_devices" />
 
 
-
                         <TextView
                             style="@style/textRegularStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_8sdp"
                             android:text="@string/p_measuring_settings"
-                            android:textSize="14sp"
                             android:textAlignment="viewStart"
+                            android:textSize="14sp"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <RadioGroup
-                             android:id="@+id/unitGroup"
-                             android:layout_width="match_parent"
-                             android:layout_height="wrap_content"
-                             android:orientation="horizontal">
+                            android:id="@+id/unitGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
 
                             <RadioButton
-                                 android:id="@+id/rbPMeasurementCm"
-                                 android:layout_width="0dp"
-                                 android:layout_height="wrap_content"
-                                 android:layout_weight="1"
-                                 android:text="@string/p_cm"
-                                android:visibility="gone"
-                                 android:textAlignment="viewStart" />
+                                android:id="@+id/rbPMeasurementCm"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/p_cm"
+                                android:textAlignment="viewStart"
+                                android:visibility="gone" />
 
                             <RadioButton
-                                 android:id="@+id/rbPMeasurementIN"
-                                 android:layout_width="0dp"
-                                 android:layout_height="wrap_content"
-                                 android:layout_weight="1"
-                                 android:text="@string/p_in"
-                                android:visibility="gone"
-                                 android:textAlignment="viewStart" />
+                                android:id="@+id/rbPMeasurementIN"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/p_in"
+                                android:textAlignment="viewStart"
+                                android:visibility="gone" />
 
                             <RadioButton
-                                 android:id="@+id/rbPMeasurementMM"
-                                 android:layout_width="0dp"
-                                 android:layout_height="wrap_content"
-                                 android:layout_weight="1"
-                                 android:text="@string/p_mm"
-                                 android:textAlignment="viewStart" />
-
+                                android:id="@+id/rbPMeasurementMM"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/p_mm"
+                                android:textAlignment="viewStart" />
 
 
                         </RadioGroup>
@@ -217,16 +217,17 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/height_container"
-                                android:layout_weight="1"
-                                android:layout_height="0dp"
                                 style="@style/loginTextInputLayout"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:hint="@string/p_height"
                                 android:textAlignment="viewStart"
-                                app:helperText="ملي"
-                                android:hint="@string/p_height">
+                                app:helperText="ملي">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/height_et"
@@ -234,12 +235,13 @@
                                     android:layout_height="wrap_content"
                                     android:autoSizeTextType="uniform"
                                     android:autofillHints="false"
-                                    android:inputType="numberDecimal"
                                     android:imeOptions="actionNext"
+                                    android:inputType="numberDecimal"
+                                    android:text="10"
+                                    android:textAlignment="viewStart"
                                     android:textColor="@color/purple_500"
                                     android:textSize="16sp"
                                     tools:ignore="SpeakableTextPresentCheck"
-                                    android:textAlignment="viewStart"
                                     tools:targetApi="o" />
 
 
@@ -248,22 +250,23 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/width_container"
                                 style="@style/loginTextInputLayout"
-                                android:layout_weight="1"
-                                android:layout_marginStart="@dimen/_5sdp"
                                 android:layout_height="0dp"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:hint="@string/p_width"
                                 android:textAlignment="viewStart"
-                                app:helperText="ملي"
-                                android:hint="@string/p_width">
+                                app:helperText="ملي">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/width_et"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textAlignment="viewStart"
                                     android:autoSizeTextType="uniform"
                                     android:autofillHints="false"
-                                    android:inputType="numberDecimal"
                                     android:imeOptions="actionNext"
+                                    android:inputType="numberDecimal"
+                                    android:text="10"
+                                    android:textAlignment="viewStart"
                                     android:textColor="@color/purple_500"
                                     android:textSize="16sp"
                                     tools:ignore="SpeakableTextPresentCheck"

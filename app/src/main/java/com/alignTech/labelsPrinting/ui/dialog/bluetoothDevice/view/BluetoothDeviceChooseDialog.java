@@ -1,6 +1,7 @@
 package com.alignTech.labelsPrinting.ui.dialog.bluetoothDevice.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Administrator on 2015/6/30.
  */
+@SuppressLint("MissingPermission")
 public class BluetoothDeviceChooseDialog extends DialogFragment {
 
     private final String TAG = getClass().getSimpleName();
@@ -109,6 +111,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
             }
         });
     }
+
 
     public void setBluetooth(boolean enable) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
