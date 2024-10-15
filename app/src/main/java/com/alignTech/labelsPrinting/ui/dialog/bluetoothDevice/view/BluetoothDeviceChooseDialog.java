@@ -206,7 +206,7 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
 
     }
 
-    }
+
 
     @Override
     public void onDismiss(DialogInterface dialog) {
@@ -216,6 +216,8 @@ public class BluetoothDeviceChooseDialog extends DialogFragment {
             mContext.unregisterReceiver(mBluetoothReceiver);
         }
     }
+
+
 
     public void setOnDeviceItemClickListener(onDeviceItemClickListener listener) {
         mListener = listener;

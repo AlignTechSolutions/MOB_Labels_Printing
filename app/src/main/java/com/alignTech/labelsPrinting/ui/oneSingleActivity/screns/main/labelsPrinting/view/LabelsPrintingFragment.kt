@@ -2,6 +2,7 @@ package com.alignTech.labelsPrinting.ui.oneSingleActivity.screns.main.labelsPrin
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -257,27 +258,51 @@ class LabelsPrintingFragment : BaseFragment<FragmentLabelsPrintingBinding>() , D
         MainScope().launch {
             (activity as OneSingleActivity).activityViewModel.clearData()
         }
-        if (!EasyPermissions.hasPermissions(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-            )) {
-            EasyPermissions.requestPermissions(
-                requireActivity(),
-                "Needed for the ${getString(R.string.app_name)}",
-                PICK_FILE_RESULT_CODE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-            )
-            return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 33 and higher
+            // Request MANAGE_EXTERNAL_STORAGE (more modern approach)
+            if (EasyPermissions.hasPermissions(requireContext(), Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
+                EasyPermissions.requestPermissions(requireActivity(), "Needed for file access",
+                    PICK_FILE_RESULT_CODE,
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+                return;
+            } else {
+                // Use Storage Access Framework (SAF) for Android 33 and above
+//                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+//                intent.addCategory(Intent.CATEGORY_OPENABLE)
+//                intent.type = "*/*"
+//                startActivityForResult(intent, PICK_FILE_RESULT_CODE)
+                (activity as OneSingleActivity).openFilePicker()
+                activityViewModel.workbookMutableLiveData.observe(viewLifecycleOwner) {
+                    it?.let {
+                        onSuccess(it)
+                    }
+                }
+            }
         }else{
-            (activity as OneSingleActivity).openFilePicker()
-            activityViewModel.workbookMutableLiveData.observe(viewLifecycleOwner){
-                it?.let {
-                    onSuccess(it)
+            if (!EasyPermissions.hasPermissions(
+                    requireContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                )) {
+                EasyPermissions.requestPermissions(
+                    requireActivity(),
+                    "Needed for the ${getString(R.string.app_name)}",
+                    PICK_FILE_RESULT_CODE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                )
+                return
+            }else{
+                (activity as OneSingleActivity).openFilePicker()
+                activityViewModel.workbookMutableLiveData.observe(viewLifecycleOwner){
+                    it?.let {
+                        onSuccess(it)
+                    }
                 }
             }
         }
+
     }
 
     var x = 0

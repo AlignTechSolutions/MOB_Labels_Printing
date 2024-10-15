@@ -92,6 +92,8 @@
     <string name="disconnect">قطع الاتصال</string>
     <string name="connect">الاتصال</string>
     <string name="please_connect">انقر لتوصيل جهاز</string>
+    <string name="hide">اخفاء</string>
+    <string name="show">اظهار</string>
 
 
 </resources>

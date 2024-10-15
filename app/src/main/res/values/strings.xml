@@ -91,5 +91,6 @@
     <string name="disconnect">Disconnect</string>
     <string name="connect">Connect</string>
     <string name="please_connect">Click to connect a device</string>
-
+    <string name="hide">hide</string>
+    <string name="show">show</string>
 </resources>
